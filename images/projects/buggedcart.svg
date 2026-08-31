@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="520" viewBox="0 0 800 520">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0a0f1e"/>
+      <stop offset="0.5" stop-color="#12203a"/>
+      <stop offset="1" stop-color="#1f3b57"/>
+    </linearGradient>
+    <linearGradient id="lime" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#a3e635"/>
+      <stop offset="1" stop-color="#65a30d"/>
+    </linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="shadow"><feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="#000" flood-opacity="0.5"/></filter>
+  </defs>
+
+  <rect width="800" height="520" rx="18" fill="url(#bg)"/>
+  <circle cx="700" cy="60" r="160" fill="#34d399" opacity="0.06"/>
+  <circle cx="90" cy="470" r="200" fill="#38bdf8" opacity="0.05"/>
+
+  <g transform="translate(40,40)">
+    <rect width="720" height="66" rx="14" fill="#0b1220" stroke="#233044" stroke-width="2" filter="url(#shadow)"/>
+    <circle cx="28" cy="33" r="8" fill="#f87171"/><circle cx="54" cy="33" r="8" fill="#fbbf24"/><circle cx="80" cy="33" r="8" fill="#34d399"/>
+    <text x="120" y="40" font-family="Consolas, monospace" font-size="16" fill="#64748b">http://buggedcart.local/owasp-top10</text>
+    <rect x="600" y="18" width="96" height="30" rx="8" fill="#166534"/><text x="648" y="38" font-family="Consolas, monospace" font-size="12" fill="#a7f3d0" text-anchor="middle">SECURE MODE</text>
+  </g>
+
+  <g transform="translate(40,130)">
+    <circle cx="40" cy="34" r="26" fill="#eab308" filter="url(#glow)"/>
+    <path d="M32 28 h14 l3 8 h10 l3 -8 h12 l-14 26 h-40 z" fill="#0f172a"/>
+    <circle cx="40" cy="40" r="2.4" fill="#fff"/>
+    <text x="70" y="26" font-family="Arial" font-size="20" font-weight="bold" fill="#ffffff">Vulnerable Shopping Cart</text>
+    <text x="70" y="48" font-family="Consolas, monospace" font-size="13" fill="#fbbf24">OWASP Top 10 · deliberately insecure e-commerce</text>
+  </g>
+
+  <g transform="translate(40,205)" font-family="Consolas, monospace">
+    <g font-size="13">
+      <text x="0" y="20" fill="#f87171" font-weight="bold">A1  Injection</text>
+      <text x="0" y="44" fill="#f87171" font-weight="bold">A2  Broken Authentication</text>
+      <text x="0" y="68" fill="#f87171" font-weight="bold">A3  Sensitive Data Exposure</text>
+      <text x="0" y="92" fill="#f87171" font-weight="bold">A4  XXE</text>
+      <text x="0" y="116" fill="#f87171" font-weight="bold">A5  Broken Access Control</text>
+      <text x="0" y="140" fill="#f87171" font-weight="bold">A6  Security Misconfiguration</text>
+      <text x="0" y="164" fill="#f87171" font-weight="bold">A7  XSS</text>
+      <text x="220" y="20" fill="#f87171" font-weight="bold">A8  Insecure Deserialization</text>
+      <text x="220" y="44" fill="#f87171" font-weight="bold">A9  Vulnerable Components</text>
+      <text x="220" y="68" fill="#f87171" font-weight="bold">A10 Logging & Monitoring</text>
+      <text x="220" y="110" fill="#93c5fd" font-size="12">Attack patterns via SQLi,</text>
+      <text x="220" y="128" fill="#93c5fd" font-size="12">XSS, CSRF & IDOR</text>
+    </g>
+    <rect x="480" y="8" width="210" height="150" rx="12" fill="#0b1220" stroke="#233044" stroke-width="2"/>
+    <text x="494" y="32" font-family="Arial" font-size="13" font-weight="bold" fill="#a3e635">Bug Report</text>
+    <g stroke="#475569" stroke-width="1">
+      <line x1="494" y1="52" x2="676" y2="52"/>
+      <line x1="494" y1="132" x2="676" y2="132"/>
+    </g>
+    <text x="494" y="72" font-family="Consolas" font-size="11" fill="#cbd5e1">■ Cart total manipulated on</text>
+    <text x="494" y="89" font-family="Consolas" font-size="11" fill="#cbd5e1">  checkout (price tampering)</text>
+    <text x="494" y="106" font-family="Consolas" font-size="11" fill="#cbd5e1">■ Coupon stored XSS payload</text>
+    <text x="494" y="123" font-family="Consolas" font-size="11" fill="#cbd5e1">  fired on admin dashboard</text>
+    <rect x="500" y="142" width="190" height="0"/>
+  </g>
+
+  <g transform="translate(40,400)">
+    <rect width="720" height="70" rx="14" fill="#0b1220" stroke="#233044" stroke-width="2"/>
+    <rect x="16" y="12" width="8" height="46" rx="4" fill="url(#lime)"/>
+    <text x="40" y="34" font-family="Arial" font-size="15" font-weight="bold" fill="#ffffff">Security Testing</text>
+    <text x="40" y="54" font-family="Consolas, monospace" font-size="12" fill="#94a3b8">Flask + SQLite · automated scans · manual exploit chain · OWASP ZAP + Burp Suite</text>
+    <text x="640" y="44" font-family="Consolas, monospace" font-size="22" fill="#a3e635" font-weight="bold">#BUG</text>
+  </g>
+</svg>
