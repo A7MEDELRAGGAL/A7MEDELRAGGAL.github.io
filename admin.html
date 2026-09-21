@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>لوحة إدارة المحتوى المحلية</title>
+  <style>
+    :root { color-scheme: light dark; }
+    body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; background: #0f172a; color: #e2e8f0; }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 24px 16px 40px; }
+    .card { background: #111827; border: 1px solid #334155; border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+    h1, h2 { margin-top: 0; }
+    textarea { width: 100%; min-height: 320px; background: #020617; color: #e2e8f0; border: 1px solid #334155; border-radius: 10px; padding: 12px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; direction: ltr; }
+    input[type="password"] { width: 100%; background: #020617; color: #e2e8f0; border: 1px solid #334155; border-radius: 10px; padding: 10px; }
+    .row { display: flex; flex-wrap: wrap; gap: 8px; }
+    button { border: 1px solid #334155; background: #1d4ed8; color: #fff; padding: 10px 14px; border-radius: 10px; cursor: pointer; font-weight: 700; }
+    button.secondary { background: #1e293b; }
+    button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid #60a5fa; outline-offset: 2px; }
+    .warn { border-right: 5px solid #f59e0b; background: #1f2937; }
+    .ok { color: #22c55e; }
+    .err { color: #f87171; }
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section id="loginCard" class="card">
+      <h1>لوحة إدارة المحتوى (محلية فقط)</h1>
+      <p class="warn card"><strong>تنبيه مهم:</strong> هذه اللوحة مجرد أداة راحة على المتصفح باستخدام <code>localStorage</code>. ليست نظام إدارة آمن، وكلمة المرور الافتراضية ليست حماية حقيقية. أي تغيير يبقى على نفس المتصفح فقط.</p>
+      <label for="pass">كلمة المرور الحالية (افتراضيًا: <code>admin123</code>)</label>
+      <input id="pass" type="password" autocomplete="current-password">
+      <div class="row" style="margin-top:10px">
+        <button id="loginBtn" type="button">دخول</button>
+      </div>
+      <p id="loginMsg" aria-live="polite"></p>
+    </section>
+
+    <section id="panel" hidden>
+      <div class="card warn">
+        <h2>تحذير الأمان</h2>
+        <p>البيانات هنا <strong>لا تُنشر تلقائيًا</strong> على GitHub Pages. يلزمك تصدير الملف ورفعه يدويًا للريبو. تغيير كلمة المرور هنا أيضًا محلي على نفس المتصفح فقط.</p>
+      </div>
+
+      <div class="card">
+        <h2>محرر <code>site_cms_v1</code></h2>
+        <textarea id="editor" aria-label="CMS JSON editor"></textarea>
+        <div class="row" style="margin-top:12px">
+          <button id="saveBtn" type="button">حفظ في localStorage</button>
+          <button id="loadBtn" type="button" class="secondary">إعادة تحميل من localStorage</button>
+          <button id="resetBtn" type="button" class="secondary">تحميل الافتراضي من content.js</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>نسخ احتياطي / استيراد</h2>
+        <div class="row">
+          <button id="exportJsonBtn" type="button">تصدير JSON</button>
+          <button id="exportJsBtn" type="button">تصدير content.js</button>
+          <label for="importFile" class="secondary" style="display:inline-flex;align-items:center;padding:10px 14px;border:1px solid #334155;border-radius:10px;background:#1e293b;cursor:pointer;font-weight:700;">استيراد ملف</label>
+          <input id="importFile" type="file" accept=".json,.js,application/json,text/javascript" hidden>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>إعداد كلمة المرور المحلية</h2>
+        <input id="newPass" type="password" placeholder="كلمة مرور جديدة (محلية فقط)">
+        <div class="row" style="margin-top:10px">
+          <button id="changePassBtn" type="button" class="secondary">تغيير كلمة المرور</button>
+        </div>
+      </div>
+
+      <p id="status" aria-live="polite"></p>
+    </section>
+  </main>
+
+  <script src="content.js"></script>
+  <script>
+    (function () {
+      const CMS_KEY = 'site_cms_v1';
+      const PASS_KEY = 'site_admin_pass_v1';
+      const defaultPass = 'admin123';
+      const statusEl = document.getElementById('status');
+      const loginMsg = document.getElementById('loginMsg');
+      const editor = document.getElementById('editor');
+
+      function getStoredPass() {
+        return localStorage.getItem(PASS_KEY) || defaultPass;
+      }
+
+      function setStatus(msg, ok) {
+        statusEl.textContent = msg;
+        statusEl.className = ok ? 'ok' : 'err';
+      }
+
+      function cleanPayload(payload) {
+        if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return {};
+        if (payload.site_cms_v1 && typeof payload.site_cms_v1 === 'object') return payload.site_cms_v1;
+        return payload;
+      }
+
+      function safeParseJson(text) {
+        const parsed = JSON.parse(text);
+        return cleanPayload(parsed);
+      }
+
+      function parseImportedFile(text) {
+        try {
+          return safeParseJson(text);
+        } catch (_) {
+          const m = text.match(/window\.SITE_CONTENT\s*=\s*(\{[\s\S]*?\})\s*;?/);
+          if (!m) throw new Error('صيغة الملف غير مدعومة');
+          return safeParseJson(m[1]);
+        }
+      }
+
+      function getDefaultContent() {
+        if (window.SITE_CONTENT && typeof window.SITE_CONTENT === 'object') {
+          return cleanPayload(window.SITE_CONTENT);
+        }
+        if (window.DEFAULT_SITE_CONTENT && typeof window.DEFAULT_SITE_CONTENT === 'object') {
+          return cleanPayload(window.DEFAULT_SITE_CONTENT);
+        }
+        return {};
+      }
+
+      function loadFromStorage() {
+        const raw = localStorage.getItem(CMS_KEY);
+        if (!raw) {
+          editor.value = JSON.stringify(getDefaultContent(), null, 2);
+          return;
+        }
+        try {
+          editor.value = JSON.stringify(cleanPayload(JSON.parse(raw)), null, 2);
+        } catch (_) {
+          editor.value = JSON.stringify(getDefaultContent(), null, 2);
+          setStatus('تعذر قراءة localStorage، تم الرجوع للافتراضي.', false);
+        }
+      }
+
+      function saveToStorage() {
+        try {
+          const parsed = cleanPayload(JSON.parse(editor.value));
+          localStorage.setItem(CMS_KEY, JSON.stringify(parsed));
+          setStatus('تم حفظ المحتوى في localStorage بنجاح.', true);
+        } catch (err) {
+          setStatus('JSON غير صالح: ' + err.message, false);
+        }
+      }
+
+      function download(filename, text, mime) {
+        const blob = new Blob([text], { type: mime });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      document.getElementById('loginBtn').addEventListener('click', function () {
+        if (document.getElementById('pass').value === getStoredPass()) {
+          document.getElementById('loginCard').hidden = true;
+          document.getElementById('panel').hidden = false;
+          loadFromStorage();
+          setStatus('تم فتح اللوحة. تذكير: كل شيء محلي على المتصفح.', true);
+        } else {
+          loginMsg.textContent = 'كلمة المرور غير صحيحة.';
+          loginMsg.className = 'err';
+        }
+      });
+
+      document.getElementById('saveBtn').addEventListener('click', saveToStorage);
+      document.getElementById('loadBtn').addEventListener('click', loadFromStorage);
+      document.getElementById('resetBtn').addEventListener('click', function () {
+        editor.value = JSON.stringify(getDefaultContent(), null, 2);
+        setStatus('تم تحميل الافتراضي من content.js.', true);
+      });
+
+      document.getElementById('exportJsonBtn').addEventListener('click', function () {
+        try {
+          const data = cleanPayload(JSON.parse(editor.value));
+          download('site_cms_v1.json', JSON.stringify(data, null, 2), 'application/json');
+          setStatus('تم تصدير JSON.', true);
+        } catch (err) {
+          setStatus('تعذر التصدير: ' + err.message, false);
+        }
+      });
+
+      document.getElementById('exportJsBtn').addEventListener('click', function () {
+        try {
+          const data = cleanPayload(JSON.parse(editor.value));
+          const js = 'window.SITE_CONTENT = ' + JSON.stringify(data, null, 2) + ';\n' +
+            'window.DEFAULT_SITE_CONTENT = window.SITE_CONTENT;\n';
+          download('content.js', js, 'text/javascript');
+          setStatus('تم تصدير content.js المتوافق مع index.html.', true);
+        } catch (err) {
+          setStatus('تعذر التصدير: ' + err.message, false);
+        }
+      });
+
+      document.getElementById('importFile').addEventListener('change', function (e) {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function () {
+          try {
+            const data = parseImportedFile(String(reader.result || ''));
+            editor.value = JSON.stringify(data, null, 2);
+            setStatus('تم الاستيراد بنجاح. احفظ إذا أردت تطبيقه على localStorage.', true);
+          } catch (err) {
+            setStatus('فشل الاستيراد: ' + err.message, false);
+          }
+        };
+        reader.readAsText(file);
+      });
+
+      document.getElementById('changePassBtn').addEventListener('click', function () {
+        const value = document.getElementById('newPass').value.trim();
+        if (!value) {
+          setStatus('أدخل كلمة مرور جديدة.', false);
+          return;
+        }
+        localStorage.setItem(PASS_KEY, value);
+        setStatus('تم تغيير كلمة المرور محليًا على هذا المتصفح فقط.', true);
+      });
+    })();
+  </script>
+</body>
+</html>

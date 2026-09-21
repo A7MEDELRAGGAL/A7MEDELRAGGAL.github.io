@@ -24,6 +24,7 @@
         :root { --accent: #2563eb; --accent-light: #3b82f6; }
         html { scroll-behavior: smooth; }
         body { font-family: 'Inter', sans-serif; overflow-x: hidden; transition: background-color .4s ease, color .4s ease; }
+        :focus-visible { outline: 3px solid #60a5fa; outline-offset: 2px; }
         h1, h2, h3, .font-display { font-family: 'Space Grotesk', sans-serif; letter-spacing: -0.01em; }
         main section { scroll-margin-top: 92px; }
         ::selection { background: #2563eb; color: #fff; }
@@ -535,7 +536,7 @@
                 <h2 class="text-3xl md:text-4xl font-bold relative z-10 text-slate-900 dark:text-white">Professional Journey</h2>
                 <p class="human-note mt-2 relative z-10">— not a straight line, but every step made me harder to hack.</p>
             </div>
-            <div class="tl relative max-w-4xl mx-auto space-y-8">
+            <div id="experienceList" class="tl relative max-w-4xl mx-auto space-y-8">
 
                 <div class="tl-item exp-card bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm reveal">
                     <div class="flex flex-wrap justify-between items-start mb-2">
@@ -888,7 +889,7 @@
                 <h2 class="text-3xl md:text-4xl font-bold relative z-10 text-slate-900 dark:text-white">Recommendations</h2>
                 <p class="human-note mt-2 relative z-10">— honestly, the best part of this page.</p>
             </div>
-            <div class="grid md:grid-cols-3 gap-8">
+            <div id="testimonialsGrid" class="grid md:grid-cols-3 gap-8">
                 <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition duration-300 reveal">
                     <div class="flex gap-1 text-yellow-400 mb-3"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
                     <p class="text-sm text-slate-600 dark:text-slate-400 italic mb-4 leading-relaxed">"Ahmed is a rare talent in AI and machine learning. His depth of knowledge is exceptional and he is always willing to mentor others. He is an asset to any team."</p>
@@ -1183,13 +1184,15 @@
 
     <!-- Lightbox -->
     <div id="lightbox">
-        <div class="absolute top-4 right-6 text-4xl text-white cursor-pointer hover:text-blue-400 transition z-10" onclick="closeLightbox()"><i class="fas fa-times"></i></div>
+        <button type="button" id="lightbox-close" class="absolute top-4 right-6 text-4xl text-white hover:text-blue-400 transition z-10" aria-label="Close preview" onclick="closeLightbox()"><i class="fas fa-times"></i></button>
         <div class="text-center max-w-4xl mx-auto px-6">
             <img id="lightbox-img" src="" alt="Preview" class="max-h-[80vh] max-w-full mx-auto rounded-xl shadow-2xl">
             <p id="lightbox-caption" class="text-white text-lg font-semibold mt-4"></p>
             <p class="text-slate-400 text-xs mt-2">Click outside to close · Press ESC</p>
         </div>
     </div>
+
+    <script src="content.js"></script>
 
     <script>
         // ===== Preloader =====
@@ -1431,9 +1434,191 @@
             });
         });
 
+
+        // ===== CMS (content.js + localStorage additive rendering) =====
+        (function () {
+            const CMS_KEY = 'site_cms_v1';
+            const toStr = function (v) { return typeof v === 'string' ? v : ''; };
+            const cleanText = function (v) { return toStr(v).replace(/[\u0000-\u001f\u007f]/g, '').trim(); };
+
+            function sanitizeUrl(raw, allowRelative) {
+                const value = cleanText(raw);
+                if (!value) return '';
+                if (allowRelative && /^(\/|\.\/|\.\.\/)/.test(value)) return value;
+                try {
+                    const u = new URL(value, window.location.origin + '/');
+                    if (u.protocol === 'http:' || u.protocol === 'https:') return u.href;
+                } catch (_) {}
+                return '';
+            }
+
+            function normalizeCmsPayload(payload) {
+                if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return {};
+                if (payload.site_cms_v1 && typeof payload.site_cms_v1 === 'object') return payload.site_cms_v1;
+                return payload;
+            }
+
+            function safeParse(raw) {
+                try { return normalizeCmsPayload(JSON.parse(raw)); } catch (_) { return null; }
+            }
+
+            function readCms() {
+                const fromFile = normalizeCmsPayload(window.SITE_CONTENT);
+                const fallback = normalizeCmsPayload(window.DEFAULT_SITE_CONTENT);
+                const fromStorage = safeParse(localStorage.getItem(CMS_KEY) || '');
+                return {
+                    profile: (fromStorage && fromStorage.profile) || fromFile.profile || fallback.profile || {},
+                    projects: (fromStorage && fromStorage.projects) || fromFile.projects || fallback.projects || [],
+                    experiences: (fromStorage && fromStorage.experiences) || fromFile.experiences || fallback.experiences || [],
+                    testimonials: (fromStorage && fromStorage.testimonials) || fromFile.testimonials || fallback.testimonials || []
+                };
+            }
+
+            function createProjectCard(item, idx) {
+                const title = cleanText(item.title || item.name);
+                const desc = cleanText(item.description);
+                const image = sanitizeUrl(item.image || item.imageUrl, true);
+                const tech = cleanText(item.tech || item.stack || item.tag);
+                const category = cleanText(item.category).toLowerCase() || 'web';
+                const href = sanitizeUrl(item.url || item.link, true);
+                if (!title || !desc || !image) return null;
+
+                const wrap = document.createElement('div');
+                wrap.className = 'tilt-wrap card-gray reveal cms-item';
+                wrap.dataset.cat = category;
+                if (idx % 3) wrap.setAttribute('data-delay', String(idx % 3));
+
+                const article = document.createElement('article');
+                article.className = 'tilt group bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-2xl hover:shadow-blue-500/10 h-full transition-colors';
+
+                const media = document.createElement('div');
+                media.className = 'relative h-52 overflow-hidden';
+
+                const img = document.createElement('img');
+                img.src = image;
+                img.alt = title;
+                img.className = 'w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 img-hover';
+                img.addEventListener('click', function () { openLightbox(img, image, title); });
+                media.appendChild(img);
+
+                if (tech) {
+                    const tag = document.createElement('span');
+                    tag.className = 'absolute top-3 left-3 bg-blue-600 text-white text-xs font-bold px-2.5 py-1 rounded-full';
+                    tag.textContent = tech;
+                    media.appendChild(tag);
+                }
+
+                const body = document.createElement('div');
+                body.className = 'p-6';
+                const h3 = document.createElement('h3');
+                h3.className = 'text-lg font-bold text-slate-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors';
+                h3.textContent = title;
+                const p = document.createElement('p');
+                p.className = 'text-sm text-slate-600 dark:text-slate-400 mb-4 leading-relaxed';
+                p.textContent = desc;
+                body.appendChild(h3);
+                body.appendChild(p);
+
+                if (href) {
+                    const a = document.createElement('a');
+                    a.href = href;
+                    a.target = '_blank';
+                    a.rel = 'noopener noreferrer';
+                    a.className = 'text-sm font-bold text-blue-700 dark:text-blue-400 hover:underline';
+                    a.textContent = 'View Link';
+                    body.appendChild(a);
+                }
+
+                article.appendChild(media);
+                article.appendChild(body);
+                wrap.appendChild(article);
+                return wrap;
+            }
+
+            function createExperienceCard(item, idx) {
+                const role = cleanText(item.role || item.title);
+                const company = cleanText(item.company || item.org);
+                const period = cleanText(item.period || item.date || item.duration);
+                const bullets = Array.isArray(item.bullets) ? item.bullets.map(cleanText).filter(Boolean) : [];
+                if (!role || !company) return null;
+
+                const card = document.createElement('div');
+                card.className = 'tl-item exp-card bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm reveal cms-item';
+                if (idx % 3) card.setAttribute('data-delay', String(idx % 3));
+
+                const top = document.createElement('div');
+                top.className = 'flex flex-wrap justify-between items-start mb-2';
+                top.innerHTML = '<div><h3 class="text-lg font-bold text-slate-900 dark:text-white"></h3><p class="text-blue-700 dark:text-blue-400 font-semibold text-sm"></p></div>';
+                top.querySelector('h3').textContent = role;
+                top.querySelector('p').textContent = company;
+
+                if (period) {
+                    const span = document.createElement('span');
+                    span.className = 'text-xs font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded';
+                    span.textContent = period;
+                    top.appendChild(span);
+                }
+
+                card.appendChild(top);
+                if (bullets.length) {
+                    const ul = document.createElement('ul');
+                    ul.className = 'list-disc list-inside text-slate-600 dark:text-slate-400 space-y-1 text-sm leading-relaxed';
+                    bullets.forEach(function (line) {
+                        const li = document.createElement('li');
+                        li.textContent = line;
+                        ul.appendChild(li);
+                    });
+                    card.appendChild(ul);
+                }
+                return card;
+            }
+
+            function createTestimonialCard(item, idx) {
+                const quote = cleanText(item.quote || item.text);
+                const name = cleanText(item.name || item.author);
+                const title = cleanText(item.title || item.role);
+                if (!quote || !name) return null;
+
+                const card = document.createElement('div');
+                card.className = 'bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition duration-300 reveal cms-item';
+                if (idx % 3) card.setAttribute('data-delay', String(idx % 3));
+                card.innerHTML = '<div class="flex gap-1 text-yellow-400 mb-3"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p class="text-sm text-slate-600 dark:text-slate-400 italic mb-4 leading-relaxed"></p><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold"></div><div><p class="font-bold text-sm"></p><p class="text-xs text-slate-500"></p></div></div>';
+                card.querySelector('p.text-sm').textContent = '"' + quote + '"';
+                card.querySelector('.w-10').textContent = name.charAt(0).toUpperCase();
+                card.querySelectorAll('p.font-bold, p.text-xs')[0].textContent = name;
+                card.querySelectorAll('p.font-bold, p.text-xs')[1].textContent = title;
+                return card;
+            }
+
+            const cms = readCms();
+            const projectGrid = document.getElementById('projectGrid');
+            const experienceList = document.getElementById('experienceList');
+            const testimonialsGrid = document.getElementById('testimonialsGrid');
+
+            if (projectGrid && Array.isArray(cms.projects)) {
+                cms.projects.forEach(function (item, idx) {
+                    const node = createProjectCard(item, idx);
+                    if (node) projectGrid.appendChild(node);
+                });
+            }
+
+            if (experienceList && Array.isArray(cms.experiences)) {
+                cms.experiences.forEach(function (item, idx) {
+                    const node = createExperienceCard(item, idx);
+                    if (node) experienceList.appendChild(node);
+                });
+            }
+
+            if (testimonialsGrid && Array.isArray(cms.testimonials)) {
+                cms.testimonials.forEach(function (item, idx) {
+                    const node = createTestimonialCard(item, idx);
+                    if (node) testimonialsGrid.appendChild(node);
+                });
+            }
+        })();
+
         // ===== Project Filters =====
         const filterBtns = document.querySelectorAll('.filter-btn');
-        const projectCards = document.querySelectorAll('#projectGrid .tilt-wrap');
         const catMap = {
             'currency.jpg': 'ai-iot',
             'cane.jpg': 'ai-iot',
@@ -1447,7 +1632,8 @@
             'dentist.jpg': 'web',
             'blog.png': 'web'
         };
-        projectCards.forEach(function(card) {
+        document.querySelectorAll('#projectGrid .tilt-wrap').forEach(function(card) {
+            if (card.dataset.cat) return;
             const img = card.querySelector('img[src]');
             const src = img ? img.getAttribute('src') : '';
             for (const key in catMap) {
@@ -1459,7 +1645,7 @@
                 filterBtns.forEach(function(b) { b.classList.remove('active'); });
                 btn.classList.add('active');
                 const f = btn.getAttribute('data-filter');
-                projectCards.forEach(function(card) {
+                document.querySelectorAll('#projectGrid .tilt-wrap').forEach(function(card) {
                     const hide = f !== 'all' && (card.dataset.cat || '').split(' ').indexOf(f) === -1;
                     card.classList.toggle('project-hidden', hide);
                 });
