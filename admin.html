@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة الأدمن | Ahmed El-Raggal</title>
+<meta name="robots" content="noindex, nofollow">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<script src="content.js"></script>
+<style>
+body{font-family:'Segoe UI',Tahoma,sans-serif}
+.tab-btn.active{background:#2563eb!important;color:#fff!important;border-color:#2563eb!important}
+.card{transition:all .25s ease}
+.card:hover{transform:translateY(-2px);box-shadow:0 12px 30px -14px rgba(37,99,235,.4)}
+input,textarea,select{outline:none}
+input:focus,textarea:focus,select:focus{border-color:#2563eb!important;box-shadow:0 0 0 3px rgba(37,99,235,.15)}
+#login-screen{position:fixed;inset:0;z-index:50;background:#070d1a;display:flex;align-items:center;justify-content:center;padding:20px}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:#0f172a;color:#fff;padding:10px 20px;border-radius:999px;font-size:13px;font-weight:700;opacity:0;pointer-events:none;transition:all .3s;z-index:100;border:1px solid rgba(59,130,246,.4)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+</style>
+</head>
+<body class="bg-slate-100 text-slate-900 min-h-screen">
+
+<div id="login-screen">
+  <div class="bg-white rounded-2xl p-8 w-full max-w-sm shadow-2xl text-center" dir="ltr">
+    <div class="w-14 h-14 rounded-2xl bg-blue-600 text-white flex items-center justify-center text-2xl mx-auto mb-4"><i class="fas fa-lock"></i></div>
+    <h1 class="font-extrabold text-lg mb-1">Admin Panel</h1>
+    <p class="text-xs text-slate-400 mb-5">Ahmed El-Raggal Portfolio CMS</p>
+    <input id="pass-input" type="password" placeholder="Passcode (default: raggal2026)" class="w-full border border-slate-300 rounded-xl px-4 py-3 text-sm mb-3">
+    <button id="pass-btn" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-700 transition">دخول / Login</button>
+    <p class="text-[11px] text-slate-400 mt-4 leading-relaxed">حماية بسيطة ضد الفضول فقط — ليست أمانًا حقيقيًا.<br>غيّر الباسورد من تبويب النسخ الاحتياطي.</p>
+    <p id="pass-err" class="hidden text-xs font-bold text-red-600 mt-3">باسورد غلط — حاول تاني</p>
+  </div>
+</div>
+
+<header class="bg-slate-900 text-white sticky top-0 z-40 shadow-lg">
+  <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
+    <div class="flex items-center gap-3">
+      <span class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center"><i class="fas fa-gear"></i></span>
+      <div>
+        <p class="font-extrabold text-sm">لوحة تحكم الموقع</p>
+        <p class="text-[11px] text-slate-400"><span id="stat-line">…</span></p>
+      </div>
+    </div>
+    <div class="flex gap-2">
+      <a href="index.html" class="bg-white/10 hover:bg-white hover:text-slate-900 transition text-xs font-bold px-4 py-2 rounded-lg"><i class="fas fa-eye ml-1"></i> عرض الموقع</a>
+      <button id="logout-btn" class="bg-red-500/20 text-red-300 hover:bg-red-500 hover:text-white transition text-xs font-bold px-4 py-2 rounded-lg"><i class="fas fa-sign-out-alt ml-1"></i> خروج</button>
+    </div>
+  </div>
+  <div class="max-w-5xl mx-auto px-4 pb-3 flex gap-2 overflow-x-auto" dir="ltr">
+    <button data-tab="projects" class="tab-btn active whitespace-nowrap text-xs font-bold px-4 py-2 rounded-full bg-white/10 border border-white/10">🚀 Projects <span id="c-projects" class="opacity-70"></span></button>
+    <button data-tab="experiences" class="tab-btn whitespace-nowrap text-xs font-bold px-4 py-2 rounded-full bg-white/10 border border-white/10">💼 Experiences <span id="c-experiences" class="opacity-70"></span></button>
+    <button data-tab="testimonials" class="tab-btn whitespace-nowrap text-xs font-bold px-4 py-2 rounded-full bg-white/10 border border-white/10">⭐ Reviews <span id="c-testimonials" class="opacity-70"></span></button>
+    <button data-tab="profile" class="tab-btn whitespace-nowrap text-xs font-bold px-4 py-2 rounded-full bg-white/10 border border-white/10">👤 Profile</button>
+    <button data-tab="backup" class="tab-btn whitespace-nowrap text-xs font-bold px-4 py-2 rounded-full bg-white/10 border border-white/10">💾 Backup</button>
+  </div>
+</header>
+
+<main class="max-w-5xl mx-auto px-4 py-6">
+
+  <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-6 text-[13px] leading-relaxed">
+    <p class="font-extrabold mb-1"><i class="fas fa-circle-info text-amber-500 ml-1"></i> إزاي التعديل بيشتغل؟</p>
+    <p>1) ضيف/عدّل هنا → الحفظ تلقائي في متصفحك → افتح <b>index.html</b> هتلاقي إضافاتك ظاهرة فورًا (شارات <b class="text-sky-600">ADMIN</b>).</p>
+    <p>2) للنشر أونلاين (GitHub Pages): تبويب <b>Backup</b> → <b>تنزيل النسخة</b> → ارفع الملف مع الموقع. أي حاجة تمسحها من هنا بتتمسح من العرض.</p>
+  </div>
+
+  <!-- PROJECTS -->
+  <section id="tab-projects" class="tab-panel active">
+    <div class="bg-white rounded-2xl border p-5 mb-4">
+      <h2 class="font-extrabold mb-4">➕ مشروع جديد</h2>
+      <div class="grid md:grid-cols-2 gap-3">
+        <input id="p-title" placeholder="اسم المشروع * (مثال: My Awesome Store)" class="border rounded-xl px-4 py-2.5 text-sm">
+        <input id="p-url" placeholder="رابط المشروع (https://…)" dir="ltr" class="border rounded-xl px-4 py-2.5 text-sm text-left">
+        <select id="p-cat" class="border rounded-xl px-4 py-2.5 text-sm">
+          <option value="web">Web & Software</option>
+          <option value="security">Security</option>
+          <option value="ai-iot">AI & IoT</option>
+          <option value="network">Networking</option>
+          <option value="hardware">Hardware</option>
+        </select>
+        <select id="p-icon" class="border rounded-xl px-4 py-2.5 text-sm">
+          <option value="fa-rocket">🚀 Rocket</option>
+          <option value="fa-briefcase">💼 Briefcase</option>
+          <option value="fa-graduation-cap">🎓 Graduation</option>
+          <option value="fa-shield-halved">🛡️ Shield</option>
+          <option value="fa-brain">🧠 AI</option>
+          <option value="fa-truck-fast">🚚 Delivery</option>
+          <option value="fa-cart-shopping">🛒 Store</option>
+          <option value="fa-code">💻 Code</option>
+        </select>
+        <input id="p-tags" placeholder="Tags (مثال: React, Tailwind, SEO)" class="border rounded-xl px-4 py-2.5 text-sm md:col-span-2">
+        <textarea id="p-desc" rows="3" placeholder="وصف قصير * (سطرين يشدّوا الناس)" class="border rounded-xl px-4 py-2.5 text-sm md:col-span-2"></textarea>
+      </div>
+      <button id="p-add" class="mt-4 bg-blue-600 text-white text-sm font-bold px-6 py-3 rounded-xl hover:bg-blue-700 transition"><i class="fas fa-plus ml-1"></i> إضافة المشروع</button>
+    </div>
+    <div id="p-list" class="grid md:grid-cols-2 gap-4"></div>
+  </section>
+
+  <!-- EXPERIENCES -->
+  <section id="tab-experiences" class="tab-panel">
+    <div class="bg-white rounded-2xl border p-5 mb-4">
+      <h2 class="font-extrabold mb-4">➕ خبرة جديدة</h2>
+      <div class="grid md:grid-cols-2 gap-3">
+        <input id="x-title" placeholder="المسمى * (مثال: SOC Analyst)" class="border rounded-xl px-4 py-2.5 text-sm">
+        <input id="x-org" placeholder="الجهة * (مثال: Company — Cairo)" class="border rounded-xl px-4 py-2.5 text-sm">
+        <input id="x-period" placeholder="الفترة (مثال: 2026 — Present)" class="border rounded-xl px-4 py-2.5 text-sm md:col-span-2">
+        <textarea id="x-details" rows="3" placeholder="تفاصيل * (نقطة أو سطرين)" class="border rounded-xl px-4 py-2.5 text-sm md:col-span-2"></textarea>
+      </div>
+      <button id="x-add" class="mt-4 bg-blue-600 text-white text-sm font-bold px-6 py-3 rounded-xl hover:bg-blue-700 transition"><i class="fas fa-plus ml-1"></i> إضافة الخبرة</button>
+    </div>
+    <div id="x-list" class="grid gap-4"></div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section id="tab-testimonials" class="tab-panel">
+    <div class="bg-white rounded-2xl border p-5 mb-4">
+      <h2 class="font-extrabold mb-4">➕ رأي / توصية جديدة</h2>
+      <div class="grid md:grid-cols-2 gap-3">
+        <input id="t-name" placeholder="الاسم * (مثال: Eng. Sara)" class="border rounded-xl px-4 py-2.5 text-sm">
+        <input id="t-role" placeholder="الدور (مثال: Client — UAE)" class="border rounded-xl px-4 py-2.5 text-sm">
+        <textarea id="t-quote" rows="3" placeholder="نص التوصية * " class="border rounded-xl px-4 py-2.5 text-sm md:col-span-2"></textarea>
+      </div>
+      <button id="t-add" class="mt-4 bg-blue-600 text-white text-sm font-bold px-6 py-3 rounded-xl hover:bg-blue-700 transition"><i class="fas fa-plus ml-1"></i> إضافة التوصية</button>
+    </div>
+    <div id="t-list" class="grid md:grid-cols-2 gap-4"></div>
+  </section>
+
+  <!-- PROFILE -->
+  <section id="tab-profile" class="tab-panel">
+    <div class="bg-white rounded-2xl border p-5">
+      <h2 class="font-extrabold mb-4">👤 البيانات الأساسية (تظهر كنصائح/حالة)</h2>
+      <div class="grid md:grid-cols-2 gap-3">
+        <input id="f-name" placeholder="الاسم" class="border rounded-xl px-4 py-2.5 text-sm">
+        <input id="f-title" placeholder="المسمى" class="border rounded-xl px-4 py-2.5 text-sm">
+        <input id="f-email" placeholder="الإيميل" dir="ltr" class="border rounded-xl px-4 py-2.5 text-sm text-left">
+        <input id="f-phone" placeholder="الهاتف" dir="ltr" class="border rounded-xl px-4 py-2.5 text-sm text-left">
+        <input id="f-location" placeholder="المكان" class="border rounded-xl px-4 py-2.5 text-sm">
+        <input id="f-cv" placeholder="رابط الـ CV" dir="ltr" class="border rounded-xl px-4 py-2.5 text-sm text-left">
+        <label class="flex items-center gap-2 text-sm font-bold border rounded-xl px-4 py-2.5"><input id="f-avail" type="checkbox" class="w-4 h-4"> متاح لشغل (Open to work)</label>
+      </div>
+      <button id="f-save" class="mt-4 bg-emerald-600 text-white text-sm font-bold px-6 py-3 rounded-xl hover:bg-emerald-700 transition"><i class="fas fa-save ml-1"></i> حفظ البيانات</button>
+    </div>
+  </section>
+
+  <!-- BACKUP -->
+  <section id="tab-backup" class="tab-panel">
+    <div class="grid md:grid-cols-2 gap-4">
+      <div class="bg-white rounded-2xl border p-5">
+        <h2 class="font-extrabold mb-3">💾 نسخ احتياطي</h2>
+        <div class="grid gap-2">
+          <button id="b-download" class="bg-blue-600 text-white text-sm font-bold px-4 py-3 rounded-xl hover:bg-blue-700 transition"><i class="fas fa-download ml-1"></i> تنزيل نسخة JSON</button>
+          <button id="b-contentjs" class="bg-slate-900 text-white text-sm font-bold px-4 py-3 rounded-xl hover:bg-slate-700 transition"><i class="fas fa-file-code ml-1"></i> تنزيل content.js</button>
+          <label class="bg-slate-100 text-sm font-bold px-4 py-3 rounded-xl text-center cursor-pointer hover:bg-slate-200 transition">📥 استيراد نسخة <input id="b-import" type="file" accept=".json" class="hidden"></label>
+          <button id="b-reset" class="bg-red-50 text-red-600 border border-red-200 text-sm font-bold px-4 py-3 rounded-xl hover:bg-red-600 hover:text-white transition"><i class="fas fa-trash ml-1"></i> مسح كل إضافات الأدمن</button>
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl border p-5">
+        <h2 class="font-extrabold mb-3">🔑 الباسورد والنشر</h2>
+        <input id="b-pass" type="text" placeholder="باسورد جديد" class="border rounded-xl px-4 py-2.5 text-sm w-full mb-2">
+        <button id="b-pass-save" class="bg-slate-900 text-white text-sm font-bold px-4 py-2.5 rounded-xl w-full mb-4">تغيير الباسورد</button>
+        <div class="text-[12px] leading-relaxed bg-slate-50 border rounded-xl p-3">
+          <p class="font-extrabold mb-1">للنشر على GitHub Pages:</p>
+          <p>1) نزّل نسخة JSON واحتفظ بيها.</p>
+          <p>2) ارفع ملفات <b>index.html + admin.html + content.js</b> زي ما هي.</p>
+          <p>3) إضافاتك محفوظة في متصفحك — وأي متصفح تفتح منه الأدمن وتستورد النسخة هيشوفها.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="toast" class="toast">تم!</div>
+
+<script>
+(function(){
+"use strict";
+var LS_DATA='site_cms_v1', LS_PASS='site_admin_pass', LS_AUTH='site_admin_auth';
+var $=function(id){return document.getElementById(id)};
+function toast(m){var t=$('toast');t.textContent=m;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},1800)}
+function defaults(){return (window.SITE_DEFAULTS||{version:1,profile:{},projects:[],experiences:[],testimonials:[]})}
+function load(){try{var d=JSON.parse(localStorage.getItem(LS_DATA)||'null');if(d&&d.version)return d}catch(e){}var d=defaults();return {version:1,profile:Object.assign({},d.profile),projects:[],experiences:[],testimonials:[]}}
+var cms=load();
+function save(silent){try{localStorage.setItem(LS_DATA,JSON.stringify(cms))}catch(e){toast('التخزين ممتلئ!');return}if(!silent)toast('✅ اتحفظ تلقائيًا');renderCounts()}
+function esc(s){return String(s||'').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+/* ---- auth ---- */
+function needPass(){try{return localStorage.getItem(LS_PASS)||'raggal2026'}catch(e){return 'raggal2026'}}
+function authed(){try{return sessionStorage.getItem(LS_AUTH)==='1'}catch(e){return false}}
+function showLogin(show){$('login-screen').style.display=show?'flex':'none'}
+showLogin(!authed());
+function tryLogin(){var v=$('pass-input').value;if(v===needPass()){try{sessionStorage.setItem(LS_AUTH,'1')}catch(e){}showLogin(false);toast('أهلًا يا أحمد 👋')}else{$('pass-err').classList.remove('hidden')}}
+$('pass-btn').onclick=tryLogin;
+$('pass-input').addEventListener('keydown',function(e){if(e.key==='Enter')tryLogin()});
+$('logout-btn').onclick=function(){try{sessionStorage.removeItem(LS_AUTH)}catch(e){}showLogin(true)};
+
+/* ---- tabs ---- */
+document.querySelectorAll('.tab-btn').forEach(function(b){b.onclick=function(){
+document.querySelectorAll('.tab-btn').forEach(function(x){x.classList.remove('active')});
+b.classList.add('active');
+document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active')});
+$('tab-'+b.getAttribute('data-tab')).classList.add('active');
+}});
+
+/* ---- render ---- */
+function renderCounts(){
+$('c-projects').textContent='('+(cms.projects.length)+')';
+$('c-experiences').textContent='('+(cms.experiences.length)+')';
+$('c-testimonials').textContent='('+(cms.testimonials.length)+')';
+$('stat-line').textContent=cms.projects.length+' مشاريع · '+cms.experiences.length+' خبرات · '+cms.testimonials.length+' آراء';
+}
+function renderProjects(){
+var w=$('p-list');w.innerHTML=cms.projects.length?'':'<p class="text-sm text-slate-400 md:col-span-2 text-center py-6">لا توجد إضافات بعد — ضيف أول مشروع فوق ☝️</p>';
+cms.projects.forEach(function(p,i){
+var d=document.createElement('div');d.className='card bg-white border rounded-2xl p-4';
+d.innerHTML='<div class="flex justify-between items-start gap-2 mb-2"><p class="font-extrabold text-sm">'+esc(p.title)+'</p><span class="text-[10px] font-bold bg-blue-100 text-blue-700 px-2 py-1 rounded-full">'+esc(p.category||'web')+'</span></div>'
++'<p class="text-xs text-slate-500 mb-2">'+esc(p.description||'')+'</p>'
++'<p class="text-[11px] text-slate-400 mb-3" dir="ltr">'+esc(p.url||'')+'</p>'
++'<div class="flex gap-2"><button class="flex-1 text-xs font-bold bg-red-50 text-red-600 border border-red-200 rounded-lg py-2" data-del="'+i+'">مسح</button>'
++'<a class="flex-1 text-center text-xs font-bold bg-slate-100 rounded-lg py-2" target="_blank" href="'+esc(p.url||'#')+'">معاينة</a></div>';
+w.appendChild(d);
+});
+w.querySelectorAll('[data-del]').forEach(function(b){b.onclick=function(){cms.projects.splice(+b.getAttribute('data-del'),1);save();renderProjects()}});
+}
+function renderExperiences(){
+var w=$('x-list');w.innerHTML=cms.experiences.length?'':'<p class="text-sm text-slate-400 text-center py-6">لا توجد إضافات بعد</p>';
+cms.experiences.forEach(function(x,i){
+var d=document.createElement('div');d.className='card bg-white border rounded-2xl p-4';
+d.innerHTML='<div class="flex justify-between items-start gap-2 mb-1"><p class="font-extrabold text-sm">'+esc(x.title)+'</p><button class="text-xs font-bold text-red-500" data-del="'+i+'">مسح ✕</button></div>'
++'<p class="text-xs font-bold text-blue-600 mb-1">'+esc(x.org||'')+' · '+esc(x.period||'')+'</p>'
++'<p class="text-xs text-slate-500">'+esc(x.details||'')+'</p>';
+w.appendChild(d);
+});
+w.querySelectorAll('[data-del]').forEach(function(b){b.onclick=function(){cms.experiences.splice(+b.getAttribute('data-del'),1);save();renderExperiences()}});
+}
+function renderTestimonials(){
+var w=$('t-list');w.innerHTML=cms.testimonials.length?'':'<p class="text-sm text-slate-400 md:col-span-2 text-center py-6">لا توجد إضافات بعد</p>';
+cms.testimonials.forEach(function(t,i){
+var d=document.createElement('div');d.className='card bg-white border rounded-2xl p-4';
+d.innerHTML='<p class="font-extrabold text-sm mb-1">'+esc(t.name)+' <span class="text-[10px] text-slate-400">'+esc(t.role||'')+'</span></p>'
++'<p class="text-xs text-slate-500 mb-3">"'+esc(t.quote)+'"</p>'
++'<button class="text-xs font-bold text-red-500" data-del="'+i+'">مسح ✕</button>';
+w.appendChild(d);
+});
+w.querySelectorAll('[data-del]').forEach(function(b){b.onclick=function(){cms.testimonials.splice(+b.getAttribute('data-del'),1);save();renderTestimonials()}});
+}
+function renderProfile(){
+var p=cms.profile||{};
+$('f-name').value=p.name||'';$('f-title').value=p.title||'';$('f-email').value=p.email||'';
+$('f-phone').value=p.phone||'';$('f-location').value=p.location||'';$('f-cv').value=p.cvUrl||'';
+$('f-avail').checked=p.availability!==false;
+}
+
+/* ---- add ---- */
+$('p-add').onclick=function(){
+var t=$('p-title').value.trim(),d=$('p-desc').value.trim();
+if(t.length<3)return toast('اكتب اسم المشروع');
+if(d.length<10)return toast('الوصف قصير — سطرين على الأقل');
+cms.projects.unshift({title:t,url:$('p-url').value.trim(),category:$('p-cat').value,icon:$('p-icon').value,tags:$('p-tags').value.trim(),description:d});
+$('p-title').value='';$('p-url').value='';$('p-tags').value='';$('p-desc').value='';
+save();renderProjects();toast('🚀 المشروع اتضاف وهيظهر في الموقع');
+};
+$('x-add').onclick=function(){
+var t=$('x-title').value.trim(),o=$('x-org').value.trim(),d=$('x-details').value.trim();
+if(t.length<3||o.length<2)return toast('اكتب المسمى والجهة');
+if(d.length<5)return toast('اكتب تفاصيل الخبرة');
+cms.experiences.unshift({title:t,org:o,period:$('x-period').value.trim(),details:d});
+$('x-title').value='';$('x-org').value='';$('x-period').value='';$('x-details').value='';
+save();renderExperiences();toast('💼 الخبرة اتضافت');
+};
+$('t-add').onclick=function(){
+var n=$('t-name').value.trim(),q=$('t-quote').value.trim();
+if(n.length<2||q.length<5)return toast('اكتب الاسم ونص التوصية');
+cms.testimonials.unshift({name:n,role:$('t-role').value.trim(),quote:q});
+$('t-name').value='';$('t-role').value='';$('t-quote').value='';
+save();renderTestimonials();toast('⭐ التوصية اتضافت');
+};
+$('f-save').onclick=function(){
+cms.profile={name:$('f-name').value.trim(),title:$('f-title').value.trim(),email:$('f-email').value.trim(),phone:$('f-phone').value.trim(),location:$('f-location').value.trim(),cvUrl:$('f-cv').value.trim(),availability:$('f-avail').checked};
+save();toast('👤 البيانات اتحفظت');
+};
+
+/* ---- backup ---- */
+function download(name,text,type){
+var b=new Blob([text],{type:type||'application/json'});var a=document.createElement('a');
+a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();
+setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},500);
+}
+$('b-download').onclick=function(){download('site-cms-backup.json',JSON.stringify(cms,null,2));toast('📥 نزلت النسخة')};
+$('b-contentjs').onclick=function(){
+var js='window.SITE_CMS_EXPORT = '+JSON.stringify(cms,null,2)+';';
+download('content.js','/* Exported '+new Date().toISOString()+' — replace content.js with this file */\n'+js+'\n','text/javascript');
+toast('📄 نزل ملف content.js')};
+$('b-import').addEventListener('change',function(e){
+var f=e.target.files[0];if(!f)return;
+var r=new FileReader();
+r.onload=function(){try{var d=JSON.parse(r.result);if(!d||typeof d!=='object')throw 0;
+cms={version:1,profile:d.profile||{},projects:d.projects||[],experiences:d.experiences||[],testimonials:d.testimonials||[]};
+save(true);renderAll();toast('✅ الاستيراد نجح')}catch(err){toast('ملف غير صالح')}};
+r.readAsText(f);e.target.value='';
+});
+$('b-reset').onclick=function(){if(confirm('متأكد؟ هيمسح كل إضافات الأدمن من المتصفح ده.')){cms={version:1,profile:{},projects:[],experiences:[],testimonials:[]};save(true);renderAll();toast('🗑️ اتمسح كل حاجة')}};
+$('b-pass-save').onclick=function(){var v=$('b-pass').value.trim();if(v.length<4)return toast('4 حروف على الأقل');try{localStorage.setItem(LS_PASS,v)}catch(e){}$('b-pass').value='';toast('🔑 الباسورد اتغير')};
+
+function renderAll(){renderCounts();renderProjects();renderExperiences();renderTestimonials();renderProfile()}
+renderAll();
+})();
+</script>
+</body>
+</html>

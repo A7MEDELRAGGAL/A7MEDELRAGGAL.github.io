@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+<title>Flag Hunter · Ahmed El-Raggal</title>
+<style>
+  :root{
+    --bg:#0d1117; --panel:#0b1f14; --accent:#00c896; --accent2:#1f6feb;
+    --text:#e6edf3; --muted:#8b949e; --danger:#ff5555;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{
+    background:radial-gradient(1200px 600px at 50% -10%, #10231b 0%, var(--bg) 60%);
+    color:var(--text);
+    font-family:"Fira Code","JetBrains Mono",Consolas,monospace;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    min-height:100vh; padding:16px; gap:14px; overflow-x:hidden;
+  }
+  a{color:var(--accent); text-decoration:none;}
+  .brand{text-align:center;}
+  .brand h1{
+    font-size:clamp(20px,5vw,30px); letter-spacing:1px;
+    background:linear-gradient(90deg,var(--accent),var(--accent2));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    text-shadow:0 0 24px rgba(0,200,150,.25);
+  }
+  .brand p{color:var(--muted); font-size:12px; margin-top:4px;}
+  .hud{
+    display:flex; gap:10px; flex-wrap:wrap; justify-content:center; width:100%; max-width:440px;
+  }
+  .stat{
+    flex:1; min-width:120px; background:var(--panel); border:1px solid rgba(0,200,150,.25);
+    border-radius:12px; padding:10px 14px; text-align:center; box-shadow:0 0 18px rgba(0,0,0,.35);
+  }
+  .stat .label{font-size:10px; letter-spacing:2px; color:var(--muted); text-transform:uppercase;}
+  .stat .value{font-size:24px; font-weight:700; color:var(--accent); margin-top:2px;}
+  .stage{position:relative;}
+  canvas{
+    background:#07120c; border:1px solid rgba(0,200,150,.35); border-radius:14px;
+    box-shadow:0 0 40px rgba(0,200,150,.15), inset 0 0 60px rgba(0,0,0,.5);
+    touch-action:none; display:block; max-width:92vw; height:auto;
+  }
+  .overlay{
+    position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:14px; background:rgba(7,18,12,.86); backdrop-filter:blur(3px); border-radius:14px; text-align:center; padding:20px;
+  }
+  .overlay.hidden{display:none;}
+  .overlay h2{font-size:clamp(22px,6vw,34px); color:var(--accent); text-shadow:0 0 20px rgba(0,200,150,.4);}
+  .overlay h2.over{color:var(--danger); text-shadow:0 0 20px rgba(255,85,85,.4);}
+  .overlay p{color:var(--muted); font-size:13px; line-height:1.6; max-width:320px;}
+  .btn{
+    cursor:pointer; border:none; border-radius:10px; padding:12px 26px; font-family:inherit; font-weight:700;
+    font-size:15px; letter-spacing:1px; color:#04140d; background:linear-gradient(90deg,var(--accent),#38e0b0);
+    box-shadow:0 0 22px rgba(0,200,150,.45); transition:transform .08s ease, box-shadow .2s ease;
+  }
+  .btn:hover{transform:translateY(-2px); box-shadow:0 0 30px rgba(0,200,150,.6);}
+  .btn:active{transform:translateY(0);}
+  .keys{color:var(--muted); font-size:11px;}
+  .keys kbd{background:#132a20; border:1px solid rgba(0,200,150,.3); border-radius:5px; padding:2px 7px; color:var(--text); font-size:11px;}
+  .pad{display:grid; grid-template-columns:repeat(3,58px); grid-template-rows:repeat(2,58px); gap:8px; margin-top:2px;}
+  .pad button{
+    background:var(--panel); color:var(--accent); border:1px solid rgba(0,200,150,.3); border-radius:12px;
+    font-size:22px; cursor:pointer; user-select:none; -webkit-tap-highlight-color:transparent;
+  }
+  .pad button:active{background:#123527;}
+  .pad .up{grid-column:2; grid-row:1;}
+  .pad .left{grid-column:1; grid-row:2;}
+  .pad .down{grid-column:2; grid-row:2;}
+  .pad .right{grid-column:3; grid-row:2;}
+  footer{color:var(--muted); font-size:11px; text-align:center;}
+  @media (min-width:720px){ .pad{display:none;} }
+</style>
+</head>
+<body>
+  <div class="brand">
+    <h1>⚡ FLAG HUNTER</h1>
+    <p>a neon snake mini-game · built by <a href="https://github.com/A7MEDELRAGGAL">Ahmed El-Raggal</a></p>
+  </div>
+
+  <div class="hud">
+    <div class="stat"><div class="label">Flags</div><div class="value" id="score">0</div></div>
+    <div class="stat"><div class="label">Best</div><div class="value" id="best">0</div></div>
+    <div class="stat"><div class="label">Level</div><div class="value" id="level">1</div></div>
+  </div>
+
+  <div class="stage">
+    <canvas id="game" width="440" height="440"></canvas>
+    <div class="overlay" id="overlay">
+      <h2 id="ovTitle">FLAG HUNTER</h2>
+      <p id="ovText">Grab the 🚩 flags, grow your stack, and don't crash into yourself or the walls. Every 5 flags = faster level.</p>
+      <button class="btn" id="startBtn">▶ START HACK</button>
+      <div class="keys"><kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> or <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> · <kbd>Space</kbd> pause</div>
+    </div>
+  </div>
+
+  <div class="pad" id="pad">
+    <button class="up" data-dir="up">▲</button>
+    <button class="left" data-dir="left">◀</button>
+    <button class="down" data-dir="down">▼</button>
+    <button class="right" data-dir="right">▶</button>
+  </div>
+
+  <footer>© 2026 Ahmed El-Raggal · Information Security Analyst</footer>
+
+<script>
+(function(){
+  const canvas = document.getElementById('game');
+  const ctx = canvas.getContext('2d');
+  const scoreEl = document.getElementById('score');
+  const bestEl = document.getElementById('best');
+  const levelEl = document.getElementById('level');
+  const overlay = document.getElementById('overlay');
+  const ovTitle = document.getElementById('ovTitle');
+  const ovText = document.getElementById('ovText');
+  const startBtn = document.getElementById('startBtn');
+
+  const GRID = 22;
+  const CELL = canvas.width / GRID;
+
+  let snake, dir, nextDir, food, score, best, level, speed, timer, state;
+
+  best = parseInt(localStorage.getItem('fh_best') || '0', 10);
+  bestEl.textContent = best;
+
+  function reset(){
+    snake = [{x:10,y:11},{x:9,y:11},{x:8,y:11}];
+    dir = {x:1,y:0};
+    nextDir = dir;
+    score = 0; level = 1; speed = 140;
+    placeFood();
+    updateHud();
+  }
+
+  function placeFood(){
+    let p;
+    do { p = {x:Math.floor(Math.random()*GRID), y:Math.floor(Math.random()*GRID)}; }
+    while (snake.some(s => s.x===p.x && s.y===p.y));
+    food = p;
+  }
+
+  function updateHud(){
+    scoreEl.textContent = score;
+    levelEl.textContent = level;
+    bestEl.textContent = best;
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    // grid
+    ctx.strokeStyle = 'rgba(0,200,150,0.06)';
+    ctx.lineWidth = 1;
+    for(let i=1;i<GRID;i++){
+      ctx.beginPath(); ctx.moveTo(i*CELL,0); ctx.lineTo(i*CELL,canvas.height); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0,i*CELL); ctx.lineTo(canvas.width,i*CELL); ctx.stroke();
+    }
+    // food (flag)
+    ctx.save();
+    ctx.shadowColor = '#ffcc00'; ctx.shadowBlur = 16;
+    ctx.font = (CELL*0.9) + 'px serif';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText('🚩', food.x*CELL + CELL/2, food.y*CELL + CELL/2 + 1);
+    ctx.restore();
+    // snake
+    snake.forEach((s,i)=>{
+      const t = i/snake.length;
+      ctx.save();
+      ctx.shadowColor = '#00c896'; ctx.shadowBlur = i===0 ? 20 : 8;
+      ctx.fillStyle = i===0 ? '#38e0b0' : `rgba(0,200,150,${0.95 - t*0.6})`;
+      roundRect(s.x*CELL+1, s.y*CELL+1, CELL-2, CELL-2, 5);
+      ctx.fill();
+      ctx.restore();
+    });
+  }
+
+  function roundRect(x,y,w,h,r){
+    ctx.beginPath();
+    ctx.moveTo(x+r,y);
+    ctx.arcTo(x+w,y,x+w,y+h,r);
+    ctx.arcTo(x+w,y+h,x,y+h,r);
+    ctx.arcTo(x,y+h,x,y,r);
+    ctx.arcTo(x,y,x+w,y,r);
+    ctx.closePath();
+  }
+
+  function step(){
+    dir = nextDir;
+    const head = {x:snake[0].x + dir.x, y:snake[0].y + dir.y};
+    if(head.x<0 || head.y<0 || head.x>=GRID || head.y>=GRID){ return gameOver(); }
+    if(snake.some(s => s.x===head.x && s.y===head.y)){ return gameOver(); }
+    snake.unshift(head);
+    if(head.x===food.x && head.y===food.y){
+      score++;
+      if(score % 5 === 0){ level++; speed = Math.max(65, speed - 12); restartTimer(); }
+      if(score > best){ best = score; localStorage.setItem('fh_best', best); }
+      placeFood();
+      updateHud();
+    } else {
+      snake.pop();
+    }
+    draw();
+  }
+
+  function restartTimer(){
+    clearInterval(timer);
+    timer = setInterval(step, speed);
+  }
+
+  function start(){
+    reset();
+    state = 'playing';
+    overlay.classList.add('hidden');
+    draw();
+    restartTimer();
+  }
+
+  function gameOver(){
+    state = 'over';
+    clearInterval(timer);
+    ovTitle.textContent = '💥 STACK TRACE';
+    ovTitle.classList.add('over');
+    ovText.innerHTML = `You captured <b style="color:var(--accent)">${score}</b> flag(s) on level ${level}.<br>Best run: <b>${best}</b>. Patch it and try again?`;
+    startBtn.textContent = '↻ RE-EXPLOIT';
+    overlay.classList.remove('hidden');
+  }
+
+  function togglePause(){
+    if(state === 'playing'){
+      state = 'paused';
+      clearInterval(timer);
+      ovTitle.textContent = '⏸ PAUSED';
+      ovTitle.classList.remove('over');
+      ovText.textContent = 'Press Space or the button to resume the exploit.';
+      startBtn.textContent = '▶ RESUME';
+      overlay.classList.remove('hidden');
+    } else if(state === 'paused'){
+      state = 'playing';
+      overlay.classList.add('hidden');
+      restartTimer();
+    }
+  }
+
+  function setDir(d){
+    const map = {
+      up:{x:0,y:-1}, down:{x:0,y:1}, left:{x:-1,y:0}, right:{x:1,y:0}
+    };
+    const nd = map[d];
+    if(!nd) return;
+    if(nd.x === -dir.x && nd.y === -dir.y) return; // no reverse
+    nextDir = nd;
+  }
+
+  document.addEventListener('keydown', (e)=>{
+    const k = e.key.toLowerCase();
+    if(['arrowup','arrowdown','arrowleft','arrowright',' '].includes(e.key.toLowerCase()) || e.key===' ') e.preventDefault();
+    if(k==='arrowup'||k==='w') setDir('up');
+    else if(k==='arrowdown'||k==='s') setDir('down');
+    else if(k==='arrowleft'||k==='a') setDir('left');
+    else if(k==='arrowright'||k==='d') setDir('right');
+    else if(k===' '){ if(state==='playing'||state==='paused') togglePause(); }
+    else if(k==='enter'){ if(state!=='playing') start(); }
+  });
+
+  startBtn.addEventListener('click', ()=>{
+    if(state==='paused'){ togglePause(); }
+    else { start(); }
+  });
+
+  // touch dpad
+  document.querySelectorAll('#pad button').forEach(b=>{
+    const handler = (ev)=>{ ev.preventDefault(); setDir(b.dataset.dir); };
+    b.addEventListener('touchstart', handler, {passive:false});
+    b.addEventListener('mousedown', handler);
+  });
+
+  // swipe
+  let sx=0, sy=0;
+  canvas.addEventListener('touchstart', e=>{ sx=e.touches[0].clientX; sy=e.touches[0].clientY; }, {passive:true});
+  canvas.addEventListener('touchend', e=>{
+    const dx = e.changedTouches[0].clientX - sx;
+    const dy = e.changedTouches[0].clientY - sy;
+    if(Math.abs(dx) < 20 && Math.abs(dy) < 20) return;
+    if(Math.abs(dx) > Math.abs(dy)) setDir(dx>0?'right':'left');
+    else setDir(dy>0?'down':'up');
+  }, {passive:true});
+
+  state = 'ready';
+  reset();
+  draw();
+})();
+</script>
+</body>
+</html>

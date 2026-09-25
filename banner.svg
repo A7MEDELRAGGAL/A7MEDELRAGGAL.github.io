@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 250" width="1000" height="250" font-family="'Segoe UI',Arial,sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#06231b"/>
+      <stop offset="0.55" stop-color="#0a1622"/>
+      <stop offset="1" stop-color="#0a1a2f"/>
+    </linearGradient>
+    <linearGradient id="acc" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#00c896"/>
+      <stop offset="1" stop-color="#1f6feb"/>
+    </linearGradient>
+    <pattern id="dots" width="26" height="26" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.2" fill="#00c896" opacity="0.12"/>
+    </pattern>
+  </defs>
+
+  <rect width="1000" height="250" rx="18" fill="url(#bg)"/>
+  <rect width="1000" height="250" rx="18" fill="url(#dots)"/>
+  <rect x="0" y="0" width="1000" height="6" fill="url(#acc)"/>
+
+  <path d="M0 205 Q 250 165 500 205 T 1000 205 L1000 250 L0 250 Z" fill="url(#acc)" opacity="0.12"/>
+  <path d="M0 220 Q 250 185 500 220 T 1000 220 L1000 250 L0 250 Z" fill="url(#acc)" opacity="0.22"/>
+
+  <text x="500" y="98" text-anchor="middle" font-size="56" font-weight="800" fill="#ffffff">Ahmed El-Raggal</text>
+  <text x="500" y="140" text-anchor="middle" font-size="21" font-weight="600" fill="#67e8f9">IT Developer &#183; InfoSec Analyst &#183; AI &amp; Cybersecurity &#183; IoT</text>
+  <text x="500" y="176" text-anchor="middle" font-size="14" font-style="italic" fill="#8b949e" font-family="Consolas,monospace">the guy who breaks things so they can't be broken</text>
+</svg>
