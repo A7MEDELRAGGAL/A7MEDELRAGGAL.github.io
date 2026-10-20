@@ -1,0 +1,15 @@
+{
+  "name": "tidebreak",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Original open-water fishing sandbox for the browser",
+  "scripts": {
+    "build": "node build.js",
+    "test": "node tools/apicheck.js",
+    "verify": "node tools/apicheck.js && node build.js && node tools/verify-dist.js",
+    "serve": "python -m http.server 8080"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

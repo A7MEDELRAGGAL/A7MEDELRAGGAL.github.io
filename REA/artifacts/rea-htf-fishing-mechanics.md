@@ -1,0 +1,796 @@
+# REA digest — Muck Assembly-CSharp (reference for the How to Fish track)
+
+Artifact sha256: 5f9d0dc1e0e72f5493013c92d05ed9fb8628019f54f8bc02162dad0d2f20810c
+Module MVID: 8db17789-d6d5-48de-86ab-e696a5ff6b2b
+
+Extracted from the REA managed-member evidence. Structure, names and tunables are
+used as a mechanics reference; all art, text and code in this project is original.
+
+## rea-htf-fishing-mechanics.md — not present in this artifact
+
+## FishingRod  (75 fields, 63 methods)
+
+### fields
+- `<DefaultBait>k__BackingField` : class:152  [flags 1]
+- `_bait` : class:764  [flags 4]
+- `_tipJoint` : class:17  [flags 4]
+- `_rodParts` : class:53[]  [flags 4]
+- `_baitJointForceForMaxBend` : r4  [flags 4]
+- `_maxRodBendAngle` : r4  [flags 4]
+- `_rodBendForceSmoothSpeed` : r4  [flags 4]
+- `_rodBendRotSmoothSpeed` : r4  [flags 4]
+- `_rodBendDistribution` : class:329  [flags 4]
+- `_rodBendForceMultiCurve` : class:329  [flags 4]
+- `_crank` : class:53  [flags 4]
+- `_crankHandle` : class:53  [flags 4]
+- `_crankHandleHandHolder` : class:53  [flags 4]
+- `_handLeft` : class:53  [flags 4]
+- `_animator` : class:261  [flags 4]
+- `_line` : class:345  [flags 4]
+- `_linePoints` : class:165<class:53>  [flags 4]
+- `_slowReelSource` : class:177  [flags 4]
+- `_castReelSoundSource` : class:177  [flags 4]
+- `_reelAudioPitchMulti` : r4  [flags 4]
+- `_reelAudioVolMulti` : r4  [flags 4]
+- `_castReelAudioPitchMulti` : r4  [flags 4]
+- `_castReelAudioVolMulti` : r4  [flags 4]
+- `_reelAudioMaxVol` : r4  [flags 4]
+- `_minLineLength` : r4  [flags 4]
+- `_maxLineLength` : r4  [flags 4]
+- `_lineReelStepLength` : r4  [flags 4]
+- `_lineReelDamping` : r4  [flags 4]
+- `_holdReelSpeed` : r4  [flags 4]
+- `_reelMultiIncreaseSpeed` : r4  [flags 4]
+- `_reelMultiDecreaseSpeed` : r4  [flags 4]
+- `_baitStuckDistToTP` : r4  [flags 4]
+- `_baitStuckTimeToTP` : r4  [flags 4]
+- `_lineThrowSpeed` : r4  [flags 4]
+- `_baitDragByLineLength` : class:329  [flags 4]
+- `_crankRotMulti` : r4  [flags 4]
+- `_minMaxFishVelForDamage` : valuetype:173  [flags 4]
+- `_velDamageMulti` : r4  [flags 4]
+- `_dropInfo` : class:256  [flags 4]
+- `_pullBackRodInfo` : class:256  [flags 4]
+- `_throwInfo` : class:256  [flags 4]
+- `_reelInfo` : class:256  [flags 4]
+- `_reelOrDropInfo` : class:256  [flags 4]
+- `_releaseBaitRotPercent` : r4  [flags 4]
+- `_castingRotCurve` : class:329  [flags 4]
+- `_castingRodRotSpeed` : r4  [flags 4]
+- `_castingRodRotBackSpeed` : r4  [flags 4]
+- `_castVol` : r4  [flags 1]
+- `<TimeOfEquip>k__BackingField` : r4  [flags 1]
+- `_curLineLengthMulti` : i4  [flags 4]
+- `_receivedCurLineLengthMulti` : i4  [flags 4]
+- `_lineReelVelRef` : r4  [flags 4]
+- `_holdReelTimer` : r4  [flags 4]
+- `_curReelSpeedMulti` : r4  [flags 4]
+- `_isReelingIn` : bool  [flags 4]
+- `_isReelingOut` : bool  [flags 4]
+- `_isDisabled` : bool  [flags 4]
+- `_curRodRot` : r4  [flags 4]
+- `_receivedRodRot` : r4  [flags 4]
+- `_isPullingBack` : bool  [flags 4]
+- `_receivedBaitPos` : valuetype:9  [flags 1]
+- `_rodPartUnbentLocalRotations` : valuetype:73[]  [flags 1]
+- `_rodPartCurrentBends` : valuetype:73[]  [flags 1]
+- `_receivedBaitForce` : r4  [flags 1]
+- `_curRodBendForce` : r4  [flags 1]
+- `_curRodBendForceRefVel` : r4  [flags 1]
+- `_baitStuckDistToTPSqr` : r4  [flags 1]
+- `_baitStuckTimer` : r4  [flags 1]
+- `_rodPartsWereBent` : bool  [flags 1]
+- `_receivedRodRotWasDecreasing` : bool  [flags 1]
+- `_receivedRodRotWasIncreasing` : bool  [flags 1]
+- `_hasReceivedRodRot` : bool  [flags 1]
+- `PullBackAnim` : i4  [flags 49]
+- `NetworkInitialize___EarlyFishingRodAssembly-CSharp.dll_Excuted` : bool  [flags 1]
+- `NetworkInitialize___LateFishingRodAssembly-CSharp.dll_Excuted` : bool  [flags 1]
+
+### methods
+- `class:152 get_DefaultBait()`
+- `void set_DefaultBait(class:152)`
+- `r4 get_TimeOfEquip()`
+- `void set_TimeOfEquip(r4)`
+- `class:764 get_Bait()`
+- `valuetype:173 get_MinMaxFishVelForDamage()`
+- `r4 get_VelDamageMulti()`
+- `void Awake()`
+- `void OnStartClient()`
+- `void OnStopClient()`
+- `void OnDisable()`
+- `void OnDestroy()`
+- `void Update()`
+- `void LateUpdate()`
+- `void FixedUpdate()`
+- `void OnPickUp()`
+- `void OnDrop()`
+- `void PrimaryInput(valuetype:337)`
+- `void PrimaryInputCancel(valuetype:337)`
+- `void SecondaryInput(valuetype:337)`
+- `void SecondaryInputCanceled(valuetype:337)`
+- `void ReelInInput(valuetype:337)`
+- `void ReelInCancelled(valuetype:337)`
+- `void UpdateBaitDrag(r4)`
+- `void ReelOutInput(valuetype:337)`
+- `void ReelOutCancelled(valuetype:337)`
+- `void ReceiveBaitPosAndLineLength(valuetype:9, i4, r4, valuetype:301)`
+- `void ReceiveRodPullBack(r4, bool, valuetype:301)`
+- `void ReleaseItem(class:232)`
+- `void TickUpdate()`
+- `bool CanStartPullBack()`
+- `void OnPullBackStarted()`
+- `void OnPullBackReleased(r4)`
+- `void OnPullBackReset()`
+- `bool GetAdditionalRodState()`
+- `void ReceiveAdditionalRodState(bool)`
+- `void UpdateReleasedPullBack()`
+- `void RotateRod()`
+- `void ResetPullBack()`
+- `void SetPullBackAnimation(r4)`
+- `void ResetAnimator()`
+- `void SetReceivedBaitPos()`
+- `void TeleportIfStuck()`
+- `void DecreaseLineLength(i4)`
+- `void ResetBait()`
+- `class:152 GetCurBait()`
+- `void InitializeRodPartRots()`
+- `void RestoreRodPartsBeforeBend()`
+- `void ResetRodPartBends()`
+- `void BendRodTowardsBait()`
+- `valuetype:9 GetRodPartSegmentDirection(i4)`
+- `void .ctor()`
+- `void .cctor()`
+- `void NetworkInitialize___Early()`
+- `void NetworkInitialize___Late()`
+- `void NetworkInitializeIfDisabled()`
+- `void RpcWriter___ReceiveBaitPosAndLineLength___1797574021(valuetype:9, i4, r4, valuetype:301)`
+- `void RpcLogic___ReceiveBaitPosAndLineLength___1797574021(valuetype:9, i4, r4, valuetype:301)`
+- `void RpcReader___ReceiveBaitPosAndLineLength___1797574021(class:321, valuetype:301)`
+- `void RpcWriter___ReceiveRodPullBack___982844936(r4, bool, valuetype:301)`
+- `void RpcLogic___ReceiveRodPullBack___982844936(r4, bool, valuetype:301)`
+- `void RpcReader___ReceiveRodPullBack___982844936(class:321, valuetype:301)`
+- `void Awake_UserLogic_FishingRod_Assembly-CSharp.dll()`
+
+## FishingRodCast  (14 fields, 28 methods)
+
+### fields
+- `_rodBaseHandHolder` : class:53  [flags 1]
+- `_reel` : class:53  [flags 1]
+- `_bail` : class:53  [flags 1]
+- `_releasedLinePointHolder` : class:53  [flags 1]
+- `_releasedLinePoint` : class:53  [flags 1]
+- `_reelingLineBailPoint` : class:53  [flags 1]
+- `_fastReelSource` : class:177  [flags 1]
+- `_reelRotMulti` : r4  [flags 1]
+- `_curBailRot` : valuetype:73  [flags 1]
+- `_releasePoint` : r4  [flags 1]
+- `_bailOpen` : bool  [flags 1]
+- `_receivedBailOpen` : bool  [flags 1]
+- `NetworkInitialize___EarlyFishingRodCastAssembly-CSharp.dll_Excuted` : bool  [flags 1]
+- `NetworkInitialize___LateFishingRodCastAssembly-CSharp.dll_Excuted` : bool  [flags 1]
+
+### methods
+- `void Awake()`
+- `void Update()`
+- `void LateUpdate()`
+- `void OnPickUp()`
+- `void OnDrop()`
+- `void ReelInInput(valuetype:337)`
+- `void ReelInCancelled(valuetype:337)`
+- `void ReelOutInput(valuetype:337)`
+- `void ReelOutCancelled(valuetype:337)`
+- `bool CanStartPullBack()`
+- `void OnPullBackStarted()`
+- `void OnPullBackReleased(r4)`
+- `void OnPullBackReset()`
+- `bool GetAdditionalRodState()`
+- `void ReceiveAdditionalRodState(bool)`
+- `void UpdateReleasedPullBack()`
+- `void StartReel()`
+- `void StartCast()`
+- `void ReelOut(bool)`
+- `void ReelIn(i4, bool)`
+- `void UpdatePlayerUI()`
+- `void AnimateBail(bool)`
+- `void AnimateHand(bool)`
+- `void .ctor()`
+- `void NetworkInitialize___Early()`
+- `void NetworkInitialize___Late()`
+- `void NetworkInitializeIfDisabled()`
+- `void Awake_UserLogic_FishingRodCast_Assembly-CSharp.dll()`
+
+## Bait  (23 fields, 35 methods)
+
+### fields
+- `_fishingRod` : class:220  [flags 1]
+- `_meshFilter` : class:253  [flags 1]
+- `_rig` : class:17  [flags 1]
+- `_rodTip` : class:53  [flags 1]
+- `_minVelForExtraDrag` : r4  [flags 1]
+- `_underWaterDrag` : r4  [flags 1]
+- `_hookTarget` : class:53  [flags 1]
+- `_joint` : class:1149  [flags 1]
+- `BaitsUnderWater` : class:437<class:764>  [flags 22]
+- `<ItemOnBait>k__BackingField` : class:232  [flags 1]
+- `<LineLength>k__BackingField` : r4  [flags 1]
+- `<ServerItemOnBait>k__BackingField` : class:232  [flags 1]
+- `_disableDrag` : bool  [flags 1]
+- `<Info>k__BackingField` : class:152  [flags 1]
+- `<TimeUnderWater>k__BackingField` : r4  [flags 1]
+- `_timeAboveWater` : r4  [flags 1]
+- `_defaultDrag` : r4  [flags 1]
+- `_velocity` : valuetype:9  [flags 1]
+- `_rodDrag` : valuetype:273<r4>  [flags 1]
+- `<RandomizedCatchTime>k__BackingField` : r4  [flags 1]
+- `_flatVelMagSqr` : r4  [flags 1]
+- `_minSqrVelForReeling` : r4  [flags 32849]
+- `_velSamples` : class:769<valuetype:768>  [flags 33]
+
+### methods
+- `class:17 get_Rig()`
+- `class:220 get_FishingRod()`
+- `class:232 get_ItemOnBait()`
+- `void set_ItemOnBait(class:232)`
+- `r4 get_LineLength()`
+- `void set_LineLength(r4)`
+- `class:53 get_HookTarget()`
+- `class:232 get_ServerItemOnBait()`
+- `void set_ServerItemOnBait(class:232)`
+- `valuetype:9 get_JointForce()`
+- `r4 get_JointForceMagnitude()`
+- `class:152 get_Info()`
+- `void set_Info(class:152)`
+- `r4 get_TimeUnderWater()`
+- `void set_TimeUnderWater(r4)`
+- `r4 get_RandomizedCatchTime()`
+- `void set_RandomizedCatchTime(r4)`
+- `void Awake()`
+- `void FixedUpdate()`
+- `void OnDisable()`
+- `void ResetTimeUnderWater()`
+- `void AddItemOnBait(class:232, bool)`
+- `void OnRemoveBaitJoint(class:232)`
+- `void ToggleDrag(bool)`
+- `void SetRodDrag(r4)`
+- `void SetLineLength(r4)`
+- `void SetBaitInfo(class:152)`
+- `void UnderwaterCheck()`
+- `void IncreaseUnderwaterTime()`
+- `void IncreaseAboveWaterTime()`
+- `void CalculateVelocity()`
+- `void SetJointLength()`
+- `void CustomDrag()`
+- `void .ctor()`
+- `void .cctor()`
+
+## BaitInfo  (15 fields, 14 methods)
+
+### fields
+- `_nameLocalized` : class:105  [flags 1]
+- `_descriptionLocalized` : class:105  [flags 1]
+- `_name` : string  [flags 1]
+- `_description` : string  [flags 1]
+- `_mesh` : class:257  [flags 1]
+- `_meshForNpc` : class:257  [flags 1]
+- `_cost` : i4  [flags 1]
+- `_lostOnBaitChance` : r4  [flags 1]
+- `_catchTimeMinMax` : valuetype:173  [flags 1]
+- `_requireReelingToCatch` : bool  [flags 1]
+- `_hookPoint` : valuetype:9  [flags 1]
+- `inventoryMeshPos` : valuetype:9  [flags 1]
+- `_inventoryRot` : valuetype:9  [flags 1]
+- `inventoryMeshScale` : r4  [flags 1]
+- `_itemWeights` : class:165<class:216>  [flags 1]
+
+### methods
+- `string get_NameLocalized()`
+- `string get_Description()`
+- `class:257 get_Mesh()`
+- `class:257 get_MeshForNpc()`
+- `i4 get_Cost()`
+- `valuetype:9 get_InventoryMeshPos()`
+- `valuetype:9 get_InventoryMeshRot()`
+- `r4 get_InventoryMeshScale()`
+- `class:165<class:216> get_ItemWeights()`
+- `bool get_RequireReelingToCatch()`
+- `r4 get_LostOnBaitChance()`
+- `valuetype:173 get_CatchTimeMinMax()`
+- `valuetype:9 get_HookPoint()`
+- `void .ctor()`
+
+## BaitSlot  (3 fields, 7 methods)
+
+### fields
+- `_baitAmountText` : class:613  [flags 1]
+- `_changeBaitShortcutText` : class:613  [flags 1]
+- `_bait` : class:152  [flags 1]
+
+### methods
+- `void Start()`
+- `void OnDestroy()`
+- `void OnControlsChanged(class:829)`
+- `void RefreshChangeBaitShortcut()`
+- `void SetBait(class:152, i4)`
+- `void UpdateAmount(i4)`
+- `void .ctor()`
+
+## CreatureManager  (9 fields, 20 methods)
+
+### fields
+- `Instance` : class:444  [flags 22]
+- `_defaultFishable` : class:212  [flags 1]
+- `_shinyCreatureChance` : i4  [flags 1]
+- `_minBaitLevel` : r4  [flags 1]
+- `_removeAliveFishLevel` : r4  [flags 1]
+- `_aliveCreatures` : class:165<class:184>  [flags 1]
+- `_aliveCreaturesToRemove` : class:165<class:184>  [flags 1]
+- `NetworkInitialize___EarlyCreatureManagerAssembly-CSharp.dll_Excuted` : bool  [flags 1]
+- `NetworkInitialize___LateCreatureManagerAssembly-CSharp.dll_Excuted` : bool  [flags 1]
+
+### methods
+- `void Awake()`
+- `void OnStartServer()`
+- `void OnStopServer()`
+- `void OnStopClient()`
+- `void AddAliveCreature(class:184)`
+- `void TickUpdate()`
+- `void FixedUpdate()`
+- `void CheckUnderWaterCreatures()`
+- `void RemoveAliveCreature(class:184)`
+- `void FindFishForAllBaits()`
+- `void FindFishForBait(class:764)`
+- `void HookItem(class:232, class:764)`
+- `class:212 GetRandomItem(valuetype:9, class:165<class:216>)`
+- `void ClearFish()`
+- `bool FishableIsBoss(class:212)`
+- `void .ctor()`
+- `void NetworkInitialize___Early()`
+- `void NetworkInitialize___Late()`
+- `void NetworkInitializeIfDisabled()`
+- `void Awake_UserLogic_CreatureManager_Assembly-CSharp.dll()`
+
+## Creature  (39 fields, 66 methods)
+
+### fields
+- `_excludeFromJournal` : bool  [flags 1]
+- `_skipRandomizedWeight` : bool  [flags 1]
+- `_dripMesh` : class:257  [flags 1]
+- `_disableOnShiny` : class:25  [flags 1]
+- `_enableOnShiny` : class:25  [flags 1]
+- `_maxHp` : i4  [flags 1]
+- `_bossHpMultiplier` : r4  [flags 1]
+- `_fullnessToRestore` : i4  [flags 1]
+- `_hpToRestore` : i4  [flags 1]
+- `_groundCheckDist` : r4  [flags 4]
+- `_headPos` : r4  [flags 1]
+- `_smallBloodParticles` : bool  [flags 1]
+- `_isEndangered` : bool  [flags 1]
+- `_bloodSizeMulti` : r4  [flags 1]
+- `_skipHitEffects` : bool  [flags 1]
+- `_ignoreDeathByWater` : bool  [flags 1]
+- `_eatPos` : valuetype:9  [flags 1]
+- `_eatRot` : valuetype:9  [flags 1]
+- `<UseDrinkSound>k__BackingField` : bool  [flags 1]
+- `_bossType` : valuetype:188  [flags 1]
+- `_bossTimeInSeconds` : r4  [flags 1]
+- `_hasCustomMovement` : bool  [flags 4]
+- `_hp` : class:265<i4>  [flags 38]
+- `_isDrip` : class:265<bool>  [flags 38]
+- `<LocalHitsTaken>k__BackingField` : i4  [flags 1]
+- `<Hp>k__BackingField` : i4  [flags 1]
+- `<LastTimeDamagedByImpact>k__BackingField` : r4  [flags 1]
+- `_localHp` : i4  [flags 4]
+- `_localIsDead` : bool  [flags 1]
+- `OnCreatureDeath` : class:157  [flags 17]
+- `_deadCreatures` : class:437<class:184>  [flags 17]
+- `<_spawnedByDynamite>k__BackingField` : bool  [flags 1]
+- `OnBossTakeDamage` : class:133<i4>  [flags 1]
+- `OnBossDeath` : class:157  [flags 1]
+- `OnBossRemoved` : class:157  [flags 1]
+- `OnInspectedCreature` : class:157  [flags 17]
+- `_isGrounded` : bool  [flags 4]
+- `NetworkInitialize___EarlyCreatureAssembly-CSharp.dll_Excuted` : bool  [flags 1]
+- `NetworkInitialize___LateCreatureAssembly-CSharp.dll_Excuted` : bool  [flags 1]
+
+### methods
+- `bool get_UseDrinkSound()`
+- `void set_UseDrinkSound(bool)`
+- `bool get_ExcludeFromJournal()`
+- `bool get_IsDrip()`
+- `r4 get_HeadPos()`
+- `bool get_IsEndangered()`
+- `bool get_IgnoreDeathByWater()`
+- `i4 get_LocalHitsTaken()`
+- `void set_LocalHitsTaken(i4)`
+- `i4 get_Hp()`
+- `void set_Hp(i4)`
+- `r4 get_LastTimeDamagedByImpact()`
+- `void set_LastTimeDamagedByImpact(r4)`
+- `i4 get_MaxHp()`
+- `r4 get_BossHpMultiplier()`
+- `bool get_IsDead()`
+- `i4 get_FullnessToRestore()`
+- `i4 get_HpToRestore()`
+- `valuetype:9 get_EatPos()`
+- `valuetype:9 get_EatRot()`
+- `valuetype:188 get_BossType()`
+- `r4 get_BossTimeInSeconds()`
+- `class:257 get_Mesh()`
+- `class:257 get_DripMesh()`
+- `void add_OnCreatureDeath(class:157)`
+- `void remove_OnCreatureDeath(class:157)`
+- `class:441<class:184> get_DeadCreatures()`
+- `bool get__spawnedByDynamite()`
+- `void set__spawnedByDynamite(bool)`
+- `void add_OnBossTakeDamage(class:133<i4>)`
+- `void remove_OnBossTakeDamage(class:133<i4>)`
+- `void add_OnBossDeath(class:157)`
+- `void remove_OnBossDeath(class:157)`
+- `void add_OnBossRemoved(class:157)`
+- `void remove_OnBossRemoved(class:157)`
+- `void add_OnInspectedCreature(class:157)`
+- `void remove_OnInspectedCreature(class:157)`
+- `void Awake()`
+- `void OnStartServer()`
+- `void OnStartClient()`
+- `void OnStopClient()`
+- `void SetDrip()`
+- `void ServerKillOnSpawn()`
+- `void InspectInput(valuetype:337)`
+- `void LocalHit(class:53, valuetype:9, valuetype:9, class:968, i4, bool, valuetype:9, bool)`
+- `void ServerChangeHp(i4)`
+- `void ObserverHit(class:968, valuetype:9, valuetype:9, i4)`
+- `void ObserverExplosionHit(class:968, valuetype:9, i4)`
+- `void OnDeath()`
+- `void SetRecentImpactHit()`
+- `void SetSleepThreshold(bool)`
+- `void OnHealthChange(i4, i4, bool)`
+- `void HealBoss(i4)`
+- `void LoadFromSave(class:1236)`
+- `void .ctor()`
+- `void .cctor()`
+- `void NetworkInitialize___Early()`
+- `void NetworkInitialize___Late()`
+- `void NetworkInitializeIfDisabled()`
+- `void RpcWriter___ObserverHit___701300449(class:968, valuetype:9, valuetype:9, i4)`
+- `void RpcLogic___ObserverHit___701300449(class:968, valuetype:9, valuetype:9, i4)`
+- `void RpcReader___ObserverHit___701300449(class:321, valuetype:301)`
+- `void RpcWriter___ObserverExplosionHit___2627372740(class:968, valuetype:9, i4)`
+- `void RpcLogic___ObserverExplosionHit___2627372740(class:968, valuetype:9, i4)`
+- `void RpcReader___ObserverExplosionHit___2627372740(class:321, valuetype:301)`
+- `void Awake_UserLogic_Creature_Assembly-CSharp.dll()`
+
+## Fish  (20 fields, 14 methods)
+
+### fields
+- `_minTime` : r4  [flags 1]
+- `_maxTime` : r4  [flags 1]
+- `_rotForce` : r4  [flags 1]
+- `_motorTime` : r4  [flags 1]
+- `_gravityMulti` : r4  [flags 1]
+- `_joints` : class:165<class:397>  [flags 6]
+- `_useTorqueInsteadOfJoints` : bool  [flags 1]
+- `_jumpForce` : r4  [flags 4]
+- `_towardsWaterForce` : r4  [flags 1]
+- `_jumpOnWater` : bool  [flags 4]
+- `_jumpToLandOnWater` : bool  [flags 1]
+- `_timer` : r4  [flags 1]
+- `_motorTimer` : r4  [flags 1]
+- `_motorStarted` : bool  [flags 1]
+- `_rotMultiplier` : i4  [flags 1]
+- `_oldIsColliding` : bool  [flags 1]
+- `_useMotor` : bool  [flags 4]
+- `_isUnderwater` : bool  [flags 4]
+- `NetworkInitialize___EarlyFishAssembly-CSharp.dll_Excuted` : bool  [flags 1]
+- `NetworkInitialize___LateFishAssembly-CSharp.dll_Excuted` : bool  [flags 1]
+
+### methods
+- `void Awake()`
+- `void FixedUpdate()`
+- `void UpdateMovement()`
+- `void InitializeMovement()`
+- `void InitializeMovementBase()`
+- `void CancelMovement()`
+- `void OnDrop()`
+- `void ResetJoint()`
+- `void OnCollision()`
+- `void .ctor()`
+- `void NetworkInitialize___Early()`
+- `void NetworkInitialize___Late()`
+- `void NetworkInitializeIfDisabled()`
+- `void Awake_UserLogic_Fish_Assembly-CSharp.dll()`
+
+## Item  (109 fields, 179 methods)
+
+### fields
+- `_id` : u1  [flags 1]
+- `_nameLocalized` : class:105  [flags 1]
+- `<IsQuestItem>k__BackingField` : bool  [flags 1]
+- `_ignoredBySeagulls` : bool  [flags 1]
+- `_ignoredByMoneyNPC` : bool  [flags 1]
+- `_ignoredByCloseDots` : bool  [flags 1]
+- `_otherRigForBird` : class:17  [flags 1]
+- `_caughtOffset` : valuetype:9  [flags 1]
+- `_worldColliders` : class:125[]  [flags 4]
+- `_extraRigs` : class:260[]  [flags 4]
+- `_pickUpCollider` : class:125  [flags 4]
+- `_modelForwardLength` : r4  [flags 4]
+- `_modelHeight` : r4  [flags 4]
+- `_weight` : r4  [flags 4]
+- `_buoyancy` : r4  [flags 1]
+- `_floatInfos` : class:252[]  [flags 1]
+- `_renderers` : class:165<class:357>  [flags 1]
+- `_skinRenderers` : class:165<class:357>  [flags 1]
+- `_attachBaitOffset` : class:53  [flags 4]
+- `_cost` : i4  [flags 1]
+- `_worth` : i4  [flags 1]
+- `_mesh` : class:257  [flags 4]
+- `_inventoryMeshScale` : r4  [flags 1]
+- `_inventoryMeshRot` : valuetype:9  [flags 1]
+- `_inventoryMeshPos` : valuetype:9  [flags 1]
+- `_drawAnimStartPos` : valuetype:9  [flags 1]
+- `_drawAnimStartRot` : valuetype:9  [flags 1]
+- `_heldPos` : valuetype:9  [flags 1]
+- `_heldRot` : valuetype:9  [flags 1]
+- `_overridePlayerVelAmount` : bool  [flags 1]
+- `_playerVelAmount` : r4  [flags 1]
+- `_holdBobMulti` : r4  [flags 1]
+- `_hoverTextTarget` : class:53  [flags 1]
+- `_hoverTextOffset` : r4  [flags 1]
+- `_trailEffects` : class:165<class:25>  [flags 1]
+- `_handModelRight` : class:53  [flags 4]
+- `_handModelLeft` : class:53  [flags 4]
+- `_handTransformsLeft` : class:1016  [flags 1]
+- `_handTransformsRight` : class:1016  [flags 1]
+- `_skinPreset` : class:304  [flags 1]
+- `_outOfHandHolder` : class:25  [flags 4]
+- `_inHandHolder` : class:25  [flags 4]
+- `_waterCollisionAudio` : valuetype:376  [flags 1]
+- `_impactSoundType` : class:844  [flags 1]
+- `<Radio>k__BackingField` : class:292  [flags 1]
+- `<IsDestroying>k__BackingField` : bool  [flags 1]
+- `<IsInteractable>k__BackingField` : bool  [flags 1]
+- `<IsColliding>k__BackingField` : bool  [flags 1]
+- `<LastHolder>k__BackingField` : class:968  [flags 1]
+- `<WaitingForForceDrop>k__BackingField` : bool  [flags 1]
+- `<LastPlayer>k__BackingField` : class:968  [flags 1]
+- `<ExtraRigsAreStiff>k__BackingField` : bool  [flags 1]
+- `<IsInInventory>k__BackingField` : bool  [flags 1]
+- `<DefaultDamp>k__BackingField` : r4  [flags 1]
+- `<DefaultAngularDamp>k__BackingField` : r4  [flags 1]
+- `_syncedRandomWeight` : class:265<r4>  [flags 38]
+- `_curSkin` : class:265<u1>  [flags 38]
+- `_cookness` : class:265<r4>  [flags 38]
+- `_killScoreMultiplier` : class:265<r4>  [flags 38]
+- `OnHookItem` : class:157  [flags 17]
+- `OnPickUpItem` : class:157  [flags 17]
+- `_rodAttachedTo` : class:265<class:220>  [flags 38]
+- `_syncedHolder` : class:265<class:968>  [flags 38]
+- `_isInteractable` : class:265<bool>  [flags 38]
+- `_bettingMultiplier` : class:265<r4>  [flags 38]
+- `_birdHolder` : class:265<class:156>  [flags 38]
+- `_holder` : class:968  [flags 4]
+- `_rig` : class:17  [flags 4]
+- `_tool` : class:340  [flags 4]
+- `_weapon` : class:348  [flags 4]
+- `_melee` : class:268  [flags 4]
+- `_fishingRod` : class:220  [flags 4]
+- `_fish` : class:208  [flags 4]
+- `_bird` : class:156  [flags 4]
+- `_explosive` : class:204  [flags 4]
+- `_creature` : class:184  [flags 4]
+- `_deadPlayer` : class:192  [flags 4]
+- `_holdingLayer` : string  [flags 4]
+- `_droppedChildLayer` : string  [flags 4]
+- `_timeOfDrop` : r4  [flags 4]
+- `_type` : valuetype:244  [flags 4]
+- `_playerWhoDropped` : class:968  [flags 4]
+- `_handsAbleToGrab` : i4  [flags 4]
+- `_rigSync` : class:736  [flags 4]
+- `_lastTimeInteractedWith` : r4  [flags 4]
+- `_fakeWorldVelocity` : valuetype:9  [flags 4]
+- `_lastPos` : valuetype:9  [flags 4]
+- `_minVelToHaveCollision` : r4  [flags 4]
+- `_canPickUp` : bool  [flags 4]
+- `_disablePlayerColOnGround` : bool  [flags 4]
+- `<BirdHolder>k__BackingField` : class:156  [flags 1]
+- `_jointToBait` : class:473  [flags 1]
+- `_handModelOrigPoses` : valuetype:9[]  [flags 1]
+- `_origPhysicsMat` : class:477  [flags 1]
+- `_hasOutline` : bool  [flags 1]
+- `_isUnderWater` : bool  [flags 1]
+- `_hoverString` : string  [flags 1]
+- `_defaultColMode` : valuetype:481  [flags 1]
+- `_startEatingPos` : valuetype:9  [flags 1]
+- `NetworkInitialize___EarlyItemAssembly-CSharp.dll_Excuted` : bool  [flags 1]
+- `NetworkInitialize___LateItemAssembly-CSharp.dll_Excuted` : bool  [flags 1]
+- `pickupDelay` : r4  [flags 6]
+- `objectID` : i4  [flags 6]
+- `<item>k__BackingField` : class:708  [flags 1]
+- `<powerup>k__BackingField` : class:720  [flags 1]
+- `pickedUp` : bool  [flags 1]
+- `readyToPickUp` : bool  [flags 1]
+- `outlineMat` : class:93  [flags 1]
+- `powerupParticles` : class:25  [flags 6]
+
+### methods
+- `class:708 get_item()`
+- `void set_item(class:708)`
+- `class:720 get_powerup()`
+- `void set_powerup(class:720)`
+- `void Awake()`
+- `void Start()`
+- `void UpdateMesh()`
+- `void FindOutlineColor()`
+- `void OnTriggerStay(class:157)`
+- `void ReadyToPickup()`
+- `void DespawnItem()`
+- `void .ctor()`
+- `bool get_IsQuestItem()`
+- `void set_IsQuestItem(bool)`
+- `bool get_IgnoredBySeagulls()`
+- `bool get_IgnoredByMoneyNpc()`
+- `bool get_IgnoredByCloseDots()`
+- `r4 get_Buoyancy()`
+- `class:252[] get_FloatInfos()`
+- `r4 get_ModelHeight()`
+- `r4 get_InventoryMeshScale()`
+- `valuetype:9 get_InventoryMeshRot()`
+- `valuetype:9 get_InventoryMeshPos()`
+- `class:968 get_SyncedHolder()`
+- `bool get_HasPlayerHolder()`
+- `i4 get_DefaultWorth()`
+- `i4 get_TotalWorth()`
+- `class:1016 get_HandTransformsRight()`
+- `class:1016 get_HandTransformsLeft()`
+- `class:53 get_HandModelRight()`
+- `class:53 get_HandModelLeft()`
+- `class:736 get_RigidbodySync()`
+- `class:17 get_Rig()`
+- `class:260[] get_ExtraRigs()`
+- `class:968 get_Holder()`
+- `class:340 get_Tool()`
+- `class:208 get_Fish()`
+- `class:156 get_Bird()`
+- `class:204 get_Explosive()`
+- `class:192 get_DeadPlayer()`
+- `class:184 get_Creature()`
+- `class:348 get_Weapon()`
+- `class:268 get_Melee()`
+- `class:292 get_Radio()`
+- `void set_Radio(class:292)`
+- `class:220 get_FishingRod()`
+- `class:220 get_AttachedRod()`
+- `class:257 get_Mesh()`
+- `class:257 get_DripMesh()`
+- `bool get_CanPickUp()`
+- `i4 get_Cost()`
+- `valuetype:244 get_Type()`
+- `valuetype:9 get_HeldRot()`
+- `class:53 get_AttachBaitOffset()`
+- `valuetype:9 get_HeldPos()`
+- `valuetype:9 get_DrawAnimStartPos()`
+- `valuetype:9 get_DrawAnimStartRot()`
+- `bool get_OverridePlayerVelAmount()`
+- `r4 get_HoldBobMulti()`
+- `r4 get_PlayerVelAmount()`
+- `class:304 get_SkinPreset()`
+- `valuetype:9 get_FakeWorldVelocity()`
+- `valuetype:376 get_WaterCollisionAudio()`
+- `class:844 get_ImpactSoundType()`
+- `u1 get_ID()`
+- `r4 get_RandomizedWeight()`
+- `bool get_IsDestroying()`
+- `void set_IsDestroying(bool)`
+- `bool get_IsInteractable()`
+- `void set_IsInteractable(bool)`
+- `bool get_IsColliding()`
+- `void set_IsColliding(bool)`
+- `class:968 get_LastHolder()`
+- `void set_LastHolder(class:968)`
+- `bool get_WaitingForForceDrop()`
+- `void set_WaitingForForceDrop(bool)`
+- `class:968 get_LastPlayer()`
+- `void set_LastPlayer(class:968)`
+- `bool get_ExtraRigsAreStiff()`
+- `void set_ExtraRigsAreStiff(bool)`
+- `bool get_IsInInventory()`
+- `void set_IsInInventory(bool)`
+- `r4 get_DefaultDamp()`
+- `void set_DefaultDamp(r4)`
+- `r4 get_DefaultAngularDamp()`
+- `void set_DefaultAngularDamp(r4)`
+- `u1 get_CurSkin()`
+- `r4 get_Cookness()`
+- `r4 get_KillScoreMultiplier()`
+- `r4 get_BettingMultiplier()`
+- `void add_OnHookItem(class:157)`
+- `void remove_OnHookItem(class:157)`
+- `void add_OnPickUpItem(class:157)`
+- `void remove_OnPickUpItem(class:157)`
+- `class:156 get_BirdHolder()`
+- `void set_BirdHolder(class:156)`
+- `void Awake()`
+- `string GetName()`
+- `void SetAttachedRod(class:220)`
+- `void OnStartServer()`
+- `void OnStopServer()`
+- `void OnStartClient()`
+- `void OnStopClient()`
+- `void Update()`
+- `void LateUpdate()`
+- `void FixedUpdate()`
+- `void RemoveBaitJointOnItemReleased(class:220)`
+- `void SetDamp()`
+- `bool TryCaughtByBird(class:156)`
+- `void ReleasedByBird()`
+- `void SetUnderWater(bool)`
+- `void SetID(u1)`
+- `void InitializeBait(class:220)`
+- `void SetKillscoreMultiplier(r4)`
+- `void AddBetMultiplier(r4)`
+- `void CheckForParent()`
+- `class:201 CheckForParentAfterServer()`
+- `void ToggleTrails(bool)`
+- `void WasInteractedWith()`
+- `void LocalHit(class:53, valuetype:9, valuetype:9, class:968, i4, bool, valuetype:9, bool)`
+- `void SetSyncedHolder(class:968, bool)`
+- `void OnSyncedHolderChange(class:968, class:968, bool)`
+- `void ReconcileLocalHolderWithSyncedHolder()`
+- `void PickUp(class:968, bool, bool)`
+- `void Drop(bool, valuetype:9, valuetype:9)`
+- `void PutInInventory()`
+- `void SpawnFromInventory()`
+- `void DestroyItem(u1, u1)`
+- `void ObserverDestroyItem(u1, u1)`
+- `void DestroyByWater()`
+- `void DestroyByNpc(u1)`
+- `void DestroyByEating()`
+- `void DestroyBySlotMachine()`
+- `void DetroyByBoss()`
+- `void DestroyByVolcano()`
+- `void DestroyImmediate()`
+- `void OnDestroyByEatingAnimation(r4)`
+- `void DespawnItemOnServer()`
+- `void Hover()`
+- `void UnHover()`
+- `void UpdateLayer()`
+- `void TrySetLayer()`
+- `void ToggleWorldColliders(bool)`
+- `void SetColliderMat(bool)`
+- `void ToggleInteractable(bool)`
+- `void CookItem(r4)`
+- `void CookWithlava()`
+- `void ObserversCookWithLavaEffects()`
+- `void CookWithLavaEffects()`
+- `void OnIsInteractableChange(bool, bool, bool)`
+- `void OnCooknessChange(r4, r4, bool)`
+- `void OnCurSkinChange(u1, u1, bool)`
+- `void ApplySkin(valuetype:312)`
+- `void ServerSetSkin(u1)`
+- `void OnAttachedRodChange(class:220, class:220, bool)`
+- `void OnCollisionEnter(class:381)`
+- `void OnCollision(class:381)`
+- `void OnDrop()`
+- `void OnPickUp()`
+- `class:472 GetExplosionInfo()`
+- `void OnBirdHolderChange(class:156, class:156, bool)`
+- `void PrimaryInput(valuetype:337)`
+- `void PrimaryInputCancel(valuetype:337)`
+- `void SecondaryInput(valuetype:337)`
+- `void SecondaryInputCanceled(valuetype:337)`
+- `void ReloadInput(valuetype:337)`
+- `void InspectInput(valuetype:337)`
+- `void LoadFromSave(class:1236)`
+- `void .ctor()`
+- `void NetworkInitialize___Early()`
+- `void NetworkInitialize___Late()`
+- `void NetworkInitializeIfDisabled()`
+- `void RpcWriter___ObserverDestroyItem___1980385015(u1, u1)`
+- `void RpcLogic___ObserverDestroyItem___1980385015(u1, u1)`
+- `void RpcReader___ObserverDestroyItem___1980385015(class:321, valuetype:301)`
+- `void RpcWriter___ObserversCookWithLavaEffects___2166136261()`
+- `void RpcLogic___ObserversCookWithLavaEffects___2166136261()`
+- `void RpcReader___ObserversCookWithLavaEffects___2166136261(class:321, valuetype:301)`
+- `void Awake_UserLogic_Item_Assembly-CSharp.dll()`

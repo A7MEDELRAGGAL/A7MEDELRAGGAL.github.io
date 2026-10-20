@@ -1,0 +1,1335 @@
+# REA constant + logic extract
+
+Source: Muck Assembly-CSharp.dll (sha256 5f9d0dc1e0e72f5493013c92d05ed9fb8628019f54f8bc02162dad0d2f20810c)
+
+Field reads/writes and float/int literals recovered from decoded CIL anchors.
+Used as a mechanics reference only: every implementation in this project is written
+from scratch, with original art, text and code.
+
+## JournalSlot
+
+### SetCreature
+```
+  call 0x0a000010
+  brfalse
+  call SaveManager.GetSavedCreature
+  ldfld sniped : bool
+  ldfld BeenKilled : bool
+  brtrue.s
+  call 0x0a000529
+  br.s
+  call 0x0a000035
+  callvirt 0x0a000282
+  callvirt Creature.get_BossType
+  brtrue.s
+  ldfld KilledDrip : bool
+  br.s
+  ldfld dropChance : r4
+  ldfld BeenKilled : bool
+  brtrue.s
+  ldstr "0x70004064"
+  br.s
+  callvirt Item.GetName
+  callvirt 0x0a00027f
+  ldfld damageMultiplier : r4
+  ldfld BeenKilled : bool
+  brfalse.s
+  callvirt Creature.get_BossType
+  bne.un.s
+  ldstr "0x7000406c"
+  br.s
+  ldstr "0x70004070"
+  callvirt Item.get_DefaultWorth
+  box
+  call 0x0a000031
+  callvirt 0x0a00027f
+  ldfld dropChance : r4
+  callvirt 0x0a000002
+  callvirt 0x0a000065
+  ldfld hammerMultiplier : r4
+  ldfld BeenKilled : bool
+  callvirt DripText.SetDrip
+  ldfld crit : bool
+  brfalse.s
+  callvirt Creature.get_BossType
+  brfalse.s
+  callvirt Item.get_Mesh
+  br.s
+  callvirt Item.get_DripMesh
+  callvirt 0x0a00008b
+  ldfld crit : bool
+  callvirt 0x0a000011
+  callvirt Item.get_InventoryMeshPos
+  callvirt 0x0a0000d8
+  ldfld crit : bool
+  callvirt 0x0a000011
+  callvirt Item.get_InventoryMeshRot
+  callvirt 0x0a00015f
+  ldfld crit : bool
+  callvirt 0x0a000011
+  call 0x0a00006c
+  callvirt Item.get_InventoryMeshScale
+  call 0x0a000025
+  callvirt 0x0a000070
+  br.s
+  ldfld dropChance : r4
+  ldstr "0x70000001"
+  callvirt 0x0a00027f
+  ldfld dropChance : r4
+  callvirt 0x0a000002
+  callvirt 0x0a000065
+  ldfld damageMultiplier : r4
+  ldstr "0x70000001"
+  callvirt 0x0a00027f
+  ldfld crit : bool
+  callvirt 0x0a00008b
+  ldfld lifesteal : r4
+  callvirt 0x0a000042
+  call 0x0a00001b
+  callvirt 0x0a000070
+  ldfld lifesteal : r4
+  call 0x0a000067
+```
+
+### ShowSlot   constants: 0.25
+```
+  ldfld lifesteal : r4
+  call 0x0a000067
+  ldfld lifesteal : r4
+  call 0x0a00006c
+  ldc.r4 0.25
+  call 0x0a00006d
+  ldc.i4.s
+  callvirt 0x0a000069
+```
+
+## QuestInteractable
+
+### SetQuest
+```
+  stfld shrines : valuetype:81[]
+  ldstr "0x70000001"
+  ldfld structures : class:113<class:25>
+  callvirt NPCQuest.get_InteractableMesh
+  callvirt 0x0a00008b
+  callvirt NPCQuest.get_Type
+  switch
+  br.s
+  callvirt NPCQuest.get_BaitToReceive
+  call 0x0a000010
+  brfalse.s
+  callvirt NPCQuest.get_BaitToReceive
+  callvirt BaitInfo.get_NameLocalized
+  ldfld structures : class:113<class:25>
+  callvirt NPCQuest.get_BaitToReceive
+  callvirt BaitInfo.get_MeshForNpc
+  callvirt 0x0a00008b
+  br.s
+  call LocalizationManager.get_LighterLocalized
+  callvirt 0x0a00002e
+  br.s
+  ldstr "0x700002cb"
+  call LocalizationManager.get_UsbForIslandLocalized
+  callvirt 0x0a00002e
+  callvirt NPCQuest.get_IslandToUnlock
+  box
+  call 0x0a00005d
+  br.s
+  call LocalizationManager.get_BoatKeysLocalized
+  callvirt 0x0a00002e
+  newarr
+  call LocalizationManager.get_TakeLocalized
+  callvirt 0x0a00002e
+  ldstr "0x7000000d"
+  ldstr "0x70000021"
+  call SpriteManager.GetPickUpInput
+  call 0x0a000032
+  stfld houses : class:1212
+```
+
+### Hover
+```
+  ldfld heightUnderWater : r4
+  brtrue.s
+  ldfld houses : class:1212
+  call Interactable.get_TextTarget
+  ldloca.s
+  initobj
+  call PlayerUI.SetLookAtText
+  call Interactable.Hover
+```
+
+### UnHover
+```
+  ldfld houses : class:1212
+  call PlayerUI.HideLookAtText
+  call Interactable.UnHover
+```
+
+### Interact
+```
+  call Server.get_Instance
+  call 0x0a000010
+  brfalse.s
+  ldfld shrines : valuetype:81[]
+  call 0x0a000010
+  brtrue.s
+  call Interactable.Interact
+  call Server.get_Instance
+  ldfld dontAddToResourceManager : bool
+  callvirt NPC.get_ID
+  callvirt Server.TakeItemFromNpc
+```
+
+### LinkNpc
+```
+  stfld dontAddToResourceManager : bool
+```
+
+## ItemManager
+
+### Awake
+```
+  stsfld Instance : class:388
+  newobj 0x0a0001e4
+  stfld list : class:137<i4,class:25>
+  newobj 0x0a0001e5
+  stfld allItems : class:137<i4,class:708>
+  newobj 0x0a0001e6
+  stfld allPowerups : class:137<i4,class:720>
+  newobj 0x0a0001e7
+  stfld stringToPowerupId : class:137<string,i4>
+  newobj GameInfo.get_GreenColor
+  stfld random : class:904
+  call DeadPlayer.Initialize
+  call DeadPlayer.InitializeCollider
+  call DeadPlayer.GetName
+```
+
+### InitAllItems
+```
+  br.s
+  ldfld allScriptableItems : class:708[]
+  stfld id : i4
+  ldfld allItems : class:137<i4,class:708>
+  ldfld allScriptableItems : class:708[]
+  callvirt 0x0a0001e8
+  ldfld allScriptableItems : class:708[]
+  blt.s
+```
+
+### InitAllDropTables
+```
+  br.s
+  ldfld allScriptableDropTables : class:740[]
+  callvirt Weapon.LateUpdate
+  ldfld allDropTables : class:137<i4,class:740>
+  ldfld allScriptableDropTables : class:740[]
+  callvirt 0x0a0001e9
+  ldfld allScriptableDropTables : class:740[]
+  blt.s
+```
+
+### InitAllPowerups
+```
+  ldfld powerupsWhite : class:720[]
+  call DeadPlayer.AddDeathForce
+  ldfld powerupsBlue : class:720[]
+  call DeadPlayer.AddDeathForce
+  ldfld powerupsOrange : class:720[]
+  call DeadPlayer.AddDeathForce
+```
+
+### AddPowerupsToList
+```
+  br.s
+  ldfld allPowerups : class:137<i4,class:720>
+  callvirt 0x0a0001ea
+  ldfld stringToPowerupId : class:137<string,i4>
+  ldfld name : string
+  callvirt 0x0a0001eb
+  stfld id : i4
+  starg.s
+  blt.s
+```
+
+### GetItemByName
+```
+  ldfld allItems : class:137<i4,class:708>
+  callvirt 0x0a0001ec
+  callvirt 0x0a0001ed
+  br.s
+  ldloca.s
+  call 0x0a0001ee
+  ldfld name : string
+  call 0x0a000030
+  brfalse.s
+  leave.s
+  ldloca.s
+  call 0x0a0001ef
+  brtrue.s
+  leave.s
+  ldloca.s
+  constrained.
+  callvirt 0x0a00000a
+```
+
+### DropItem   constants: 0.3499999940395355, 1.25
+```
+  ldarg.s
+  ldfld dropItem : class:25
+  call 0x2b000021
+  call 0x2b000038
+  ldfld allItems : class:137<i4,class:708>
+  callvirt 0x0a0000ca
+  callvirt SlotInfo..ctor
+  callvirt 0x2b000057
+  callvirt DeadPlayer.OnStopClient
+  callvirt DeadPlayer.SetVoiceChatParent
+  callvirt 0x2b00001e
+  ldsfld players : class:137<i4,class:816>
+  callvirt 0x0a00009e
+  callvirt 0x0a000045
+  callvirt 0x0a000050
+  ldsfld players : class:137<i4,class:816>
+  callvirt 0x0a00009e
+  callvirt 0x0a000045
+  stloc.s
+  ldsfld instance : class:800
+  ldfld myId : i4
+  bne.un.s
+  ldloc.s
+  callvirt 0x0a000045
+  callvirt 0x0a00001e
+  stloc.s
+  ldloc.s
+  callvirt 0x0a000056
+  call 0x0a000076
+  ldc.r4 0.3499999940395355
+  call 0x0a00006e
+  call 0x0a000070
+  stloc.s
+  ldloca.s
+  call 0x0a0000a0
+  stloc.s
+  callvirt 0x0a00007a
+  callvirt 0x0a000085
+  callvirt 0x2b000058
+  ldloc.s
+  ldsfld throwForce : r4
+  call 0x0a00006e
+  callvirt 0x0a0001f0
+  ldfld attatchDebug : bool
+  brfalse.s
+  ldfld debug : class:25
+  callvirt 0x0a00007a
+  call 0x2b000002
+  callvirt 0x2b000059
+  box
+  call 0x0a0000ec
+  stfld text : string
+  callvirt 0x0a00007a
+  call 0x0a000076
+  ldc.r4 1.25
+  call 0x0a00006e
+  callvirt 0x0a0001e1
+  callvirt 0x2b000057
+  stfld objectID : i4
+  ldfld list : class:137<i4,class:25>
+  callvirt 0x0a0001f1
+```
+
+### DropItemAtPosition   constants: 1.25
+```
+  ldarg.s
+  ldfld dropItem : class:25
+  call 0x2b000021
+  call 0x2b000038
+  ldfld allItems : class:137<i4,class:708>
+  callvirt 0x0a0000ca
+  callvirt SlotInfo..ctor
+  callvirt 0x2b000057
+  callvirt DeadPlayer.OnStopClient
+  callvirt DeadPlayer.SetVoiceChatParent
+  callvirt 0x2b00001e
+  callvirt 0x0a00007a
+  callvirt 0x0a000085
+  ldfld attatchDebug : bool
+  brfalse.s
+  ldfld debug : class:25
+  callvirt 0x0a00007a
+  call 0x2b000002
+  callvirt 0x2b000059
+  box
+  call 0x0a0000ec
+  stfld text : string
+  callvirt 0x0a00007a
+  call 0x0a000076
+  ldc.r4 1.25
+  call 0x0a00006e
+  callvirt 0x0a0001e1
+  callvirt 0x2b000057
+  stfld objectID : i4
+  ldfld list : class:137<i4,class:25>
+  callvirt 0x0a0001f1
+```
+
+### DropResource   constants: 1.25
+```
+  ldfld dropItem : class:25
+  call 0x2b000021
+  call 0x2b000038
+  callvirt 0x2b000057
+  callvirt DeadPlayer.OnStopClient
+  callvirt DeadPlayer.SetVoiceChatParent
+  callvirt 0x2b00001e
+  ldfld attatchDebug : bool
+  brfalse.s
+  ldfld debug : class:25
+  callvirt 0x0a00007a
+  call 0x2b000002
+  callvirt 0x2b000059
+  box
+  call 0x0a0000ec
+  stfld text : string
+  callvirt 0x0a00007a
+  call 0x0a000076
+  ldc.r4 1.25
+  call 0x0a00006e
+  callvirt 0x0a0001e1
+  callvirt 0x2b000057
+  stfld objectID : i4
+  ldfld list : class:137<i4,class:25>
+  callvirt 0x0a0001f1
+```
+
+### DropPowerupAtPosition   constants: 1.25
+```
+  ldfld dropItem : class:25
+  call 0x2b000021
+  ldfld allPowerups : class:137<i4,class:720>
+  callvirt 0x0a0001f2
+  call 0x2b00005a
+  callvirt 0x2b000057
+  callvirt DeadPlayer.FixedUpdate
+  callvirt DeadPlayer.SetVoiceChatParent
+  callvirt 0x2b00001e
+  callvirt 0x0a00007a
+  callvirt 0x0a000085
+  ldfld attatchDebug : bool
+  brfalse.s
+  ldfld debug : class:25
+  callvirt 0x0a00007a
+  call 0x2b000002
+  callvirt 0x2b000059
+  box
+  call 0x0a0000ec
+  stfld text : string
+  callvirt 0x0a00007a
+  call 0x0a000076
+  ldc.r4 1.25
+  call 0x0a00006e
+  callvirt 0x0a0001e1
+  callvirt 0x2b000057
+  stfld objectID : i4
+  ldfld list : class:137<i4,class:25>
+  callvirt 0x0a0001f1
+```
+
+### GetRandomPowerup
+```
+  ldfld random : class:904
+  callvirt 0x0a00006c
+  bge.un.s
+  ldfld powerupsWhite : class:720[]
+  ldfld powerupsWhite : class:720[]
+  call 0x0a000163
+  bge.un.s
+  ldfld powerupsBlue : class:720[]
+  ldfld powerupsBlue : class:720[]
+  call 0x0a000163
+  ldfld powerupsOrange : class:720[]
+  ldfld powerupsOrange : class:720[]
+  call 0x0a000163
+```
+
+### PickupItem
+```
+  ldfld list : class:137<i4,class:25>
+  callvirt 0x0a0001f3
+  call 0x0a000020
+  ldfld list : class:137<i4,class:25>
+  callvirt 0x0a0001f4
+```
+
+### SpawnSavedItem
+```
+  brtrue.s
+  br.s
+  ldfld Item : class:1236
+  brfalse.s
+  ldfld Item : class:1236
+  ldfld Exists : bool
+  brtrue.s
+  ldfld Item : class:1236
+  ldfld ItemID : u1
+  call GameInfo.GetSpawnable
+  call 0x0a000010
+  brtrue.s
+  ldfld Position : valuetype:9
+  ldfld Rotation : valuetype:73
+  call Server.get_Instance
+  callvirt Server.get_DynamicObjectsHolder
+  call 0x2b00003a
+  ldfld Item : class:1236
+  callvirt Item.LoadFromSave
+  callvirt Item.get_Creature
+  call 0x0a000010
+  brfalse.s
+  ldfld IsDeadCreature : bool
+  brfalse.s
+  callvirt Item.get_Creature
+  callvirt Creature.ServerKillOnSpawn
+  ldfld Item : class:1236
+  ldfld IsDripCreature : bool
+  brfalse.s
+  callvirt Item.get_Creature
+  callvirt Creature.SetDrip
+  callvirt 0x0a000002
+  ldloca.s
+  initobj
+  call 0x0a0001b0
+```
+
+### CheckUnderwaterItems   constants: 1
+```
+  call ItemManager.RemoveUnderwaterItems
+  call ItemManager.get_Items
+  callvirt 0x0a00037e
+  br
+  ldloca.s
+  call 0x0a00037f
+  ldloca.s
+  call 0x0a000382
+  call 0x0a000010
+  brfalse
+  ldloca.s
+  call 0x0a000382
+  callvirt 0x0a000012
+  ldfld 0x0a000019
+  call WaterManager.get_WaterHeight
+  ldc.r4 1
+  bge
+  ldloca.s
+  call 0x0a000380
+  callvirt Item.get_Tool
+  call 0x0a000010
+  brfalse.s
+  ldloca.s
+  call 0x0a000380
+  callvirt Item.get_Rig
+  callvirt 0x0a00008d
+  ldfld 0x0a000019
+  call WaterManager.get_WaterHeight
+  bgt.un.s
+  ldloca.s
+  call 0x0a000380
+  callvirt Item.get_Tool
+  callvirt Tool.ResetCooking
+  ldloca.s
+  call 0x0a000380
+  callvirt Item.get_Creature
+  call 0x0a000010
+  brfalse.s
+  ldloca.s
+  call 0x0a000380
+  callvirt Item.get_Creature
+  callvirt Creature.get_IsDead
+  brfalse.s
+  ldloca.s
+  call 0x0a000380
+  callvirt 0x0a0000ae
+  br.s
+  ldloca.s
+  call 0x0a000380
+  callvirt Item.get_Holder
+  call 0x0a000010
+  brtrue.s
+  ldloca.s
+  call 0x0a000380
+  callvirt Item.get_RigidbodySync
+  callvirt RigidbodySync.get_OnBoat
+  brfalse.s
+  ldsfld jumpForce : r4
+  ldloca.s
+  call 0x0a000380
+  callvirt 0x0a000383
+  brfalse.s
+  ldsfld jumpForce : r4
+  ldloca.s
+  call 0x0a000380
+  callvirt 0x0a000384
+  br.s
+  ldloca.s
+  call 0x0a000380
+  callvirt Item.get_FloatInfos
+  stloc.s
+  br.s
+  ldloc.s
+  callvirt FloatInfo.get_Pos
+  call WaterManager.GetWaterInfo
+  stloc.s
+  ldloca.s
+  call 0x0a000385
+  brfalse.s
+  ldloca.s
+  call 0x0a000380
+  call DazedUtils.TryMoveItemFromUnderLevel
+  ldloca.s
+  call 0x0a000380
+  callvirt Item.get_RigidbodySync
+  callvirt RigidbodySync.get_OnBoat
+  stloc.s
+  brtrue.s
+  ldloc.s
+  brtrue.s
+  ldloca.s
+  call 0x0a000380
+  call ItemManager.AddUnderwaterItem
+  ldloc.s
+  stloc.s
+  ldloc.s
+  blt.s
+  ldloca.s
+  call 0x0a000381
+  brtrue
+  leave.s
+  ldloca.s
+  constrained.
+  callvirt 0x0a000074
+```
+
+### AddUnderwaterItem   constants: 1, 0.10000000149011612
+```
+  ldsfld jumpForce : r4
+  callvirt 0x0a000383
+  brtrue
+  ldsfld jumpForce : r4
+  callvirt 0x0a000398
+  callvirt Item.get_LastHolder
+  call 0x0a000010
+  brtrue.s
+  callvirt Item.get_WaterCollisionAudio
+  switch
+  br.s
+  ldstr "0x700009c0"
+  br.s
+  ldstr "0x700009e8"
+  br.s
+  ldstr "0x70000a12"
+  br.s
+  ldstr "0x700009e8"
+  callvirt 0x0a000011
+  callvirt 0x0a000012
+  ldc.r4 1
+  ldc.r4 0.10000000149011612
+  call AudioManager.PlayRandomClipAt
+  ldstr "0x700009a8"
+  callvirt 0x0a000011
+  callvirt 0x0a000012
+  call 0x0a00001b
+  call VFXManager.Play
+```
+
+### FloatItems   constants: 1, 
+```
+  call ItemManager.get_Items
+  callvirt 0x0a00037e
+  br.s
+  ldloca.s
+  call 0x0a00037f
+  ldloca.s
+  call 0x0a000380
+  callvirt Item.SetUnderWater
+  ldloca.s
+  call 0x0a000381
+  brtrue.s
+  leave.s
+  ldloca.s
+  constrained.
+  callvirt 0x0a000074
+  ldsfld jumpForce : r4
+  callvirt 0x0a000396
+  br
+  ldloca.s
+  call 0x0a000397
+  call 0x0a000010
+  brfalse
+  callvirt Item.get_Holder
+  call 0x0a000010
+  brtrue
+  call 0x0a00004f
+  brtrue.s
+  callvirt Item.get_RigidbodySync
+  callvirt RigidbodySync.get_IsSimulatedLocal
+  br.s
+  stloc.s
+  call 0x0a00004f
+  brfalse.s
+  callvirt Item.get_RigidbodySync
+  callvirt RigidbodySync.get_IsSimulatedLocal
+  br.s
+  stloc.s
+  callvirt Item.get_RigidbodySync
+  callvirt RigidbodySync.get_IsFloating
+  brfalse.s
+  ldloc.s
+  ldloc.s
+  brfalse.s
+  callvirt Item.get_Rig
+  callvirt 0x0a0000da
+  brfalse.s
+  call ItemManager.FloatKinematicItem
+  br
+  callvirt Item.get_RigidbodySync
+  callvirt RigidbodySync.get_IsSimulatedLocal
+  brfalse
+  stloc.s
+  ldc.r4 1
+  callvirt Item.get_FloatInfos
+  stloc.s
+  callvirt Item.get_FloatInfos
+  stloc.s
+  stloc.s
+  br
+  ldloc.s
+  ldloc.s
+  stloc.s
+  ldloc.s
+  callvirt FloatInfo.get_Pos
+  call WaterManager.GetWaterInfo
+  stloc.s
+  ldloca.s
+  call 0x0a000385
+  brfalse
+  call ItemManager.TryStartFloating
+  brtrue
+  ldloc.s
+  callvirt FloatInfo.get_Rig
+  call 0x0a000010
+  brtrue.s
+  callvirt Item.get_Rig
+  br.s
+  ldloc.s
+  callvirt FloatInfo.get_Rig
+  stloc.s
+  ldloc.s
+  callvirt 0x0a0000da
+  brtrue
+  ldloc.s
+  callvirt 0x0a0000dc
+  stloc.s
+  ldloca.s
+  call 0x0a00039b
+  call WaterManager.get_ItemMinForce
+  ldc.r4 null
+  call 0x0a00000b
+  call WaterManager.get_ItemBouyancy
+  callvirt Item.get_Buoyancy
+  call 0x0a00008e
+  stloc.s
+  ldloca.s
+  ldloc.s
+  ldfld 0x0a000019
+  call WaterManager.get_ItemWaterMaxVelocity
+  callvirt Item.get_Buoyancy
+  ldloc.s
+  ldloc.s
+  call 0x0a000095
+  stfld 0x0a000019
+  ldloc.s
+  ldloc.s
+  callvirt 0x0a000099
+  callvirt Item.get_Creature
+  call 0x0a000010
+  brtrue.s
+  call 0x0a000018
+  br.s
+  call 0x0a0000f8
+  stloc.s
+  ldloc.s
+  callvirt 0x0a000011
+  callvirt 0x0a00004c
+  ldloc.s
+  call 0x0a00013a
+  ldloc.s
+  callvirt 0x0a0000fe
+  call 0x0a000044
+  stloc.s
+  ldloc.s
+  callvirt 0x0a0000fe
+  ldloc.s
+  call DazedUtils.GetAngularVelocityToTarget
+  stloc.s
+  ldloc.s
+  call WaterManager.get_ItemAngularVelocty
+  ldloc.s
+  call 0x0a000025
+  stloc.s
+  callvirt Item.get_IsColliding
+  brtrue.s
+  ldloc.s
+  ldloc.s
+  callvirt 0x0a000106
+  stloc.s
+  ldloc.s
+  stloc.s
+  ldloc.s
+  ldloc.s
+  blt
+  ldloc.s
+  callvirt Item.SetUnderWater
+  ldloca.s
+  call 0x0a000399
+  brtrue
+  leave.s
+  ldloca.s
+  constrained.
+  callvirt 0x0a000074
+```
+
+### FloatKinematicItem   constants: 0.15000000596046448, 0
+```
+  callvirt 0x0a000011
+  callvirt 0x0a000012
+  call WaterManager.GetWaterHeight
+  ldc.r4 0.15000000596046448
+  callvirt Item.get_Rig
+  callvirt 0x0a000153
+  ldfld 0x0a000019
+  ldloca.s
+  stfld 0x0a000019
+  call 0x0a00004f
+  brfalse.s
+  ldc.r4 0
+  bge.un.s
+  callvirt Item.get_Rig
+  callvirt 0x0a000153
+  call 0x0a0000f8
+  ldloca.s
+  callvirt Item.get_ModelHeight
+  call GameInfo.get_LevelLayer
+  call 0x0a000016
+  call 0x0a000020
+  brfalse.s
+  callvirt Item.get_RigidbodySync
+  ldloca.s
+  initobj
+  ldloc.s
+  ldloca.s
+  initobj
+  ldloc.s
+  callvirt RigidbodySync.StartSimulateLocal
+  callvirt Item.get_Rig
+  callvirt 0x0a000153
+  ldfld crouchScale : valuetype:81
+  call 0x0a00008e
+  call 0x0a000092
+  callvirt Item.get_Rig
+  callvirt 0x0a000248
+```
+
+### AvailableItemForBird   constants: , 0.15000000596046448, 0
+```
+  ldc.r4 null
+  ldsfld readyToJump : bool
+  callvirt 0x0a000396
+  br
+  ldloca.s
+  call 0x0a000397
+  callvirt Item.get_HasPlayerHolder
+  brtrue
+  callvirt 0x0a000014
+  brtrue
+  callvirt Item.get_BirdHolder
+  call 0x0a000010
+  brtrue
+  callvirt Item.get_Bird
+  call 0x0a000010
+  brtrue
+  callvirt Item.get_IgnoredBySeagulls
+  brtrue
+  callvirt Item.get_Creature
+  call 0x0a000010
+  brfalse.s
+  callvirt Item.get_Creature
+  callvirt Creature.get_IsDead
+  brfalse
+  callvirt Item.get_IsInteractable
+  brfalse
+  callvirt 0x0a000011
+  callvirt 0x0a000012
+  callvirt 0x0a000011
+  callvirt 0x0a000012
+  call 0x0a000013
+  stloc.s
+  callvirt 0x0a000011
+  callvirt 0x0a000012
+  ldloc.s
+  ldloca.s
+  call 0x0a000015
+  ldc.r4 0.15000000596046448
+  ldc.r4 0
+  ldloca.s
+  call 0x0a000015
+  call 0x0a00000b
+  call GameInfo.get_LevelLayer
+  call 0x0a000016
+  call 0x0a000017
+  brtrue.s
+  callvirt 0x0a000011
+  callvirt 0x0a000012
+  callvirt 0x0a000011
+  callvirt 0x0a000012
+  call 0x0a00005b
+  stloc.s
+  ldloc.s
+  bge.un.s
+  ldloc.s
+  ldloca.s
+  call 0x0a000399
+  brtrue
+  leave.s
+  ldloca.s
+  constrained.
+  callvirt 0x0a000074
+```
+
+### OnIslandUnloaded
+```
+  ldsfld extraGravity : r4
+  call 0x0a000010
+  brfalse.s
+  ldsfld LocalPlayer : class:968
+  call 0x0a000010
+  brtrue.s
+  ldsfld LocalPlayer : class:968
+  callvirt Player.get_Transform
+  callvirt 0x0a000012
+  newobj 0x0a0002ce
+  ldsfld extraGravity : r4
+  ldfld playerScale : valuetype:81
+  ldsfld extraGravity : r4
+  ldfld playerScale : valuetype:81
+  call ItemManager.get_Items
+  callvirt 0x0a00037e
+  br
+  ldloca.s
+  call 0x0a00037f
+  stloc.s
+  ldloca.s
+  call 0x0a000380
+  call 0x0a000010
+  brfalse
+  ldloca.s
+  call 0x0a000380
+  callvirt Item.get_IsDestroying
+  brtrue
+  ldloca.s
+  call 0x0a000380
+  callvirt 0x0a000014
+  brtrue
+  ldloca.s
+  call 0x0a000380
+  callvirt Item.get_SyncedHolder
+  call 0x0a000010
+  brtrue.s
+  ldloca.s
+  call 0x0a000380
+  callvirt Item.get_BirdHolder
+  call 0x0a000010
+  brtrue.s
+  ldloca.s
+  call 0x0a000380
+  callvirt Item.get_Bird
+  call 0x0a000010
+  brfalse.s
+  ldloca.s
+  call 0x0a000380
+  callvirt Item.get_Bird
+  callvirt Creature.get_IsDead
+  brfalse.s
+  ldloca.s
+  call 0x0a000380
+  callvirt Item.get_DeadPlayer
+  call 0x0a000010
+  brtrue.s
+  ldloca.s
+  call 0x0a000382
+  callvirt 0x0a000011
+  callvirt 0x0a000012
+  call 0x0a000013
+  stloc.s
+  ldloca.s
+  call 0x0a00001a
+  ble.un.s
+  ldloca.s
+  call 0x0a000380
+  callvirt 0x0a000323
+  ldloca.s
+  call 0x0a000381
+  brtrue
+  leave.s
+  ldloca.s
+  constrained.
+  callvirt 0x0a000074
+  ldsfld extraGravity : r4
+  ldsfld extraGravity : r4
+  callvirt ItemManager.RemoveItemsFarAwar
+  callvirt 0x0a000061
+```
+
+### RemoveItemsFarAwar
+```
+  newobj <RemoveItemsFarAwar>d__38..ctor
+  stfld <crouching>k__BackingField : bool
+  stfld <sliding>k__BackingField : bool
+```
+
+### .ctor   constants: 2, 50
+```
+  ldc.r4 2
+  stfld crouchScale : valuetype:81
+  ldc.r4 50
+  stfld playerScale : valuetype:81
+  call 0x0a0000ca
+```
+
+### NetworkInitialize___Early
+```
+  ldfld jumps : i4
+  brfalse.s
+  stfld jumps : i4
+  call 0x0a0000cb
+```
+
+### NetworkInitialize___Late
+```
+  ldfld x : r4
+  brfalse.s
+  stfld x : r4
+  call 0x0a0000cc
+```
+
+## ThinkingUI
+
+### Awake   constants: 0, 0, 0, 0, 0
+```
+  ldfld _journalCamera : class:369
+  callvirt 0x0a000535
+  ldfld _journalCamera : class:369
+  ldc.r4 0
+  ldc.r4 0
+  ldc.r4 0
+  ldc.r4 0
+  newobj 0x0a0002ba
+  callvirt 0x0a000536
+  ldfld _journalCamera : class:369
+  callvirt 0x0a0000d1
+  ldfld _thinkingHolderGroup : class:497
+  ldc.r4 0
+  callvirt 0x0a0002c8
+```
+
+### InitializeLocal
+```
+  ldfld _journalCamera : class:369
+  call GameInfo.get_JournalTexture
+  callvirt 0x0a000537
+  call GameInfo.get_Input
+  ldftn
+  newobj 0x0a0004ec
+  callvirt 0x0a0004ed
+  call ThinkingUI.SetupCloseInputText
+```
+
+### SetupCloseInputText
+```
+  newarr
+  ldfld _closeInput : class:493
+  callvirt 0x0a00018e
+  call SpriteManager.InputToSpriteName
+  ldfld _closeEvent : class:1257
+  call LocalizationManager.get_CloseLocalized
+  callvirt 0x0a0005e1
+  ldfld _closeEvent : class:1257
+  callvirt 0x0a0005e2
+  callvirt 0x0a0005e3
+  ldfld _closeEvent : class:1257
+  callvirt 0x0a0005e4
+```
+
+### CloudyAnimations   constants: 1, 0
+```
+  ldfld _cloudlyTransforms : class:165<class:53>
+  callvirt 0x0a0003b1
+  br.s
+  ldloca.s
+  call 0x0a0003b2
+  callvirt 0x0a000054
+  callvirt 0x0a000011
+  callvirt 0x0a000012
+  ldfld 0x0a000049
+  ldfld 0x0a000019
+  ldfld _animTime : r4
+  ldfld _offsetStrength : r4
+  ldc.r4 1
+  call 0x0a000568
+  ldloca.s
+  ldfld _cloudyCurveX : class:329
+  callvirt 0x0a000111
+  ldfld _cloudyCurveY : class:329
+  callvirt 0x0a000111
+  ldc.r4 0
+  call 0x0a00008a
+  ldloc.s
+  ldfld _animStrength : r4
+  call 0x0a000025
+  callvirt 0x0a0000d8
+  ldloca.s
+  call 0x0a0003b3
+  brtrue.s
+  leave.s
+  ldloca.s
+  constrained.
+  callvirt 0x0a000074
+  ldfld _animTime : r4
+  call 0x0a000059
+  ldfld _animSpeed : r4
+  stfld _animTime : r4
+```
+
+### UpdateJournal
+```
+  newobj <UpdateJournal>d__27..ctor
+  stfld <>4__this : class:1160
+```
+
+### UpdateJournalCamera
+```
+  ldfld _journalCamera : class:369
+  callvirt 0x0a00053f
+```
+
+### ToggleThinking   constants: 1, 0.5
+```
+  call PlayerThinking.get_IsThinking
+  brtrue.s
+  br.s
+  ldfld _thinkingCanvas : class:497
+  ldc.r4 1
+  callvirt 0x0a0002c8
+  call PlayerThinking.get_IsThinking
+  brfalse.s
+  call ThinkingUI.UpdateJournal
+  call 0x0a000061
+  call PlayerThinking.get_IsThinking
+  brfalse.s
+  call ThinkingUI.SetProgressTexts
+  call PlayerThinking.get_IsThinking
+  brtrue.s
+  ldc.i4.s
+  br.s
+  ldc.i4.s
+  ldfld _thinkingCanvas : class:497
+  callvirt 0x0a000002
+  call 0x0a000067
+  ldfld _thinkingCanvas : class:497
+  callvirt 0x0a000002
+  ldfld _thinkingAlpha : r4
+  ldc.r4 0.5
+  call 0x0a000068
+  callvirt 0x0a000069
+  ldftn
+  newobj 0x0a00006a
+  callvirt 0x0a00006b
+  ldftn
+  newobj 0x0a000085
+  callvirt 0x0a000086
+```
+
+### SetProgressTexts
+```
+  call GameInfo.KilledCreaturesCount
+  call GameInfo.KilledCreaturesCount
+  ldfld _progressText : class:613
+  ldstr "0x7000458a"
+  box
+  call GameInfo.get_AllCreatureCount
+  box
+  call LocalizationManager.get_CreaturesLocalized
+  callvirt 0x0a00002e
+  call 0x0a000033
+  callvirt 0x0a00027f
+  ldfld _dripProgressText : class:613
+  ldstr "0x7000458a"
+  box
+  call GameInfo.get_AllCreatureCount
+  box
+  call LocalizationManager.get_DripCreaturesLocalized
+  callvirt 0x0a00002e
+  call 0x0a000033
+  callvirt 0x0a00027f
+  call GameInfo.get_AllCreatureCount
+  call GameInfo.get_AllCreatureCount
+  ldfld _progressText : class:613
+  brtrue.s
+  call 0x0a000035
+  br.s
+  call GameInfo.get_OrangeColor
+  callvirt 0x0a000282
+  ldfld _dripProgressText : class:613
+  brtrue.s
+  call 0x0a000035
+  br.s
+  call GameInfo.get_OrangeColor
+  callvirt 0x0a000282
+```
+
+### SetThinkingAlpha
+```
+  stfld _thinkingAlpha : r4
+  ldfld _thinkingHolderGroup : class:497
+  callvirt 0x0a0002c8
+  call ShaderManager.SetThinkingAlpha
+```
+
+### OnThinkingComplete   constants: 0
+```
+  call PlayerThinking.get_IsThinking
+  brtrue.s
+  ldfld _thinkingCanvas : class:497
+  ldc.r4 0
+  callvirt 0x0a0002c8
+```
+
+### ScrollThinkingPage
+```
+  ldfld _curPage : i4
+  stfld _curPage : i4
+  ldfld _curPage : i4
+  ldfld _slots : class:165<class:864>
+  callvirt 0x0a0005ff
+  call GameInfo.get_AllCreatureCount
+  blt.s
+  stfld _curPage : i4
+  br.s
+  ldfld _curPage : i4
+  bge.s
+  call GameInfo.get_AllCreatureCount
+  ldc.i4.s
+  stfld _curPage : i4
+  call ThinkingUI.UpdateJournal
+  call 0x0a000061
+```
+
+### .ctor   constants: 0.10000000149011612, 1, 1, 1
+```
+  ldc.r4 0.10000000149011612
+  stfld _slotAnimDelay : r4
+  ldc.r4 1
+  stfld _animSpeed : r4
+  ldc.r4 1
+  stfld _offsetStrength : r4
+  ldc.r4 1
+  stfld _animStrength : r4
+  call 0x0a000009
+```
+
+## NPCQuest
+
+### get_Lines
+```
+  ldfld value__ : i4
+```
+
+### get_OnItemReceivedLines
+```
+  ldfld Off : valuetype:1564
+```
+
+### get_OnQuestCompletedLines
+```
+  ldfld On : valuetype:1564
+```
+
+### get_HoldingItemLines
+```
+  ldfld value__ : i4
+```
+
+### get_AlreadyCompletedLines
+```
+  ldfld Easy : valuetype:1568
+```
+
+### get_IslandToUnlock
+```
+  ldfld Creative : valuetype:1560
+```
+
+### get_QuestItems
+```
+  ldfld receiveBuffer : u1[]
+```
+
+### get_OnlyCreatures
+```
+  ldfld endPoint : class:529
+```
+
+### get_TotalItems
+```
+  ldfld id : i4
+```
+
+### get_InteractableMesh
+```
+  ldfld value__ : i4
+```
+
+### get_BaitToReceive
+```
+  ldfld Survival : valuetype:1560
+```
+
+### get_Type
+```
+  ldfld Versus : valuetype:1560
+```
+
+### HasItem
+```
+  ldfld receiveBuffer : u1[]
+  callvirt 0x0a0002cb
+  br.s
+  ldloca.s
+  call 0x0a0002cc
+  callvirt Item.get_ID
+  callvirt Item.get_ID
+  bne.un.s
+  leave.s
+  ldloca.s
+  call 0x0a0002cd
+  brtrue.s
+  leave.s
+  ldloca.s
+  constrained.
+  callvirt 0x0a000074
+```
+
+### .ctor
+```
+  stfld id : i4
+  call 0x0a00002b
+```

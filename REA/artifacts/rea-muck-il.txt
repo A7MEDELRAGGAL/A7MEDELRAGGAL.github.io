@@ -1,0 +1,1618 @@
+# REA constant + logic extract
+
+Source: Muck Assembly-CSharp.dll (sha256 5f9d0dc1e0e72f5493013c92d05ed9fb8628019f54f8bc02162dad0d2f20810c)
+
+Field reads/writes and float/int literals recovered from decoded CIL anchors.
+Used as a mechanics reference only: every implementation in this project is written
+from scratch, with original art, text and code.
+
+## PlayerMovement
+
+### get_jumping
+```
+  ldfld <jumping>k__BackingField : bool
+```
+
+### set_jumping
+```
+  stfld <jumping>k__BackingField : bool
+```
+
+### get_sliding
+```
+  ldfld <sliding>k__BackingField : bool
+```
+
+### set_sliding
+```
+  stfld <sliding>k__BackingField : bool
+```
+
+### get_crouching
+```
+  ldfld <crouching>k__BackingField : bool
+```
+
+### set_crouching
+```
+  stfld <crouching>k__BackingField : bool
+```
+
+### get_sprinting
+```
+  ldfld <sprinting>k__BackingField : bool
+```
+
+### set_sprinting
+```
+  stfld <sprinting>k__BackingField : bool
+```
+
+### Awake
+```
+  call PlayerMovement.set_Instance
+  call 0x2b000006
+  stfld rb : class:61
+  call 0x2b00009b
+  stfld playerStatus : class:552
+```
+
+### Start
+```
+  call 0x0a000045
+  callvirt 0x0a00005f
+  stfld playerScale : valuetype:81
+  call 0x2b00003e
+  stfld playerCollider : class:157
+  call 0x0a000228
+  call 0x0a000227
+```
+
+### Update
+```
+  ldfld dead : bool
+  brfalse.s
+  call PlayerMovement.FootSteps
+  ldfld rb : class:61
+  callvirt 0x0a000047
+  ldfld 0x0a000066
+  stfld fallSpeed : r4
+```
+
+### GetInput
+```
+  ldfld x : r4
+  ldfld y : r4
+  newobj 0x0a000130
+```
+
+### SetInput
+```
+  ldfld 0x0a000120
+  stfld x : r4
+  ldfld 0x0a000121
+  stfld y : r4
+  call PlayerMovement.set_crouching
+  call PlayerMovement.set_jumping
+  ldarg.s
+  call PlayerMovement.set_sprinting
+```
+
+### CheckInput
+```
+  call PlayerMovement.get_crouching
+  brfalse.s
+  call PlayerMovement.get_sliding
+  brtrue.s
+  call PlayerMovement.StartCrouch
+  call PlayerMovement.get_crouching
+  brtrue.s
+  call PlayerMovement.get_sliding
+  brfalse.s
+  call PlayerMovement.StopCrouch
+  call PlayerMovement.get_sprinting
+  brfalse.s
+  ldfld playerStatus : class:552
+  callvirt PlayerStatus.CanRun
+  brfalse.s
+  ldfld maxRunSpeed : r4
+  stfld maxSpeed : r4
+  ldfld maxWalkSpeed : r4
+  stfld maxSpeed : r4
+```
+
+### StartCrouch   constants: 0.6499999761581421, 0.5
+```
+  call PlayerMovement.get_sliding
+  brfalse.s
+  call PlayerMovement.set_sliding
+  call 0x0a000045
+  ldfld crouchScale : valuetype:81
+  callvirt 0x0a000068
+  call 0x0a000045
+  call 0x0a000045
+  callvirt 0x0a000050
+  ldfld 0x0a000087
+  call 0x0a000045
+  callvirt 0x0a000050
+  ldfld 0x0a000066
+  ldc.r4 0.6499999761581421
+  call 0x0a000045
+  callvirt 0x0a000050
+  ldfld 0x0a000088
+  newobj 0x0a00006d
+  callvirt 0x0a000085
+  ldfld rb : class:61
+  callvirt 0x0a000047
+  ldloca.s
+  call 0x0a000189
+  ldc.r4 0.5
+  ble.un.s
+  ldfld grounded : bool
+  brfalse.s
+  ldfld rb : class:61
+  ldfld orientation : class:29
+  callvirt 0x0a000045
+  callvirt 0x0a000056
+  ldfld slideForce : r4
+  call 0x0a00006e
+  callvirt 0x0a0001f0
+```
+
+### StopCrouch   constants: 0.6499999761581421
+```
+  call PlayerMovement.set_sliding
+  call 0x0a000045
+  ldfld playerScale : valuetype:81
+  callvirt 0x0a000068
+  call 0x0a000045
+  call 0x0a000045
+  callvirt 0x0a000050
+  ldfld 0x0a000087
+  call 0x0a000045
+  callvirt 0x0a000050
+  ldfld 0x0a000066
+  ldc.r4 0.6499999761581421
+  call 0x0a000045
+  callvirt 0x0a000050
+  ldfld 0x0a000088
+  newobj 0x0a00006d
+  callvirt 0x0a000085
+```
+
+### FootSteps   constants: 1, 20, 20, 50, 300, 0
+```
+  call PlayerMovement.get_crouching
+  brtrue.s
+  ldfld dead : bool
+  brfalse.s
+  ldfld grounded : bool
+  brfalse.s
+  ldc.r4 1
+  ldfld rb : class:61
+  callvirt 0x0a000047
+  ldloca.s
+  call 0x0a000189
+  ldc.r4 20
+  ble.un.s
+  ldc.r4 20
+  ldfld distance : r4
+  call 0x0a00005c
+  ldc.r4 50
+  stfld distance : r4
+  ldfld distance : r4
+  ldc.r4 300
+  ble.un.s
+  ldfld footstepFx : class:25
+  call 0x0a000045
+  callvirt 0x0a000050
+  call 0x0a00007f
+  call 0x2b00000a
+  ldc.r4 0
+  stfld distance : r4
+```
+
+### WaterMovement   constants: 1, 2, 1, 0, 0.5
+```
+  ldc.r4 1
+  call PlayerMovement.get_jumping
+  brfalse.s
+  ldc.r4 2
+  ldfld rb : class:61
+  call 0x0a000076
+  ldfld rb : class:61
+  callvirt 0x0a000206
+  call 0x0a00006e
+  call 0x0a000201
+  ldfld 0x0a000066
+  call 0x0a00006e
+  call 0x0a00006e
+  callvirt 0x0a0001f0
+  ldc.r4 1
+  ldsfld Instance : class:552
+  callvirt PlayerStatus.get_stamina
+  ldc.r4 0
+  bgt.un.s
+  ldc.r4 0.5
+  ldfld rb : class:61
+  ldfld playerCam : class:29
+  callvirt 0x0a000045
+  callvirt 0x0a000056
+  ldfld y : r4
+  call 0x0a00006e
+  ldfld swimSpeed : r4
+  call 0x0a00006e
+  call 0x0a00006e
+  callvirt 0x0a0001f0
+  ldfld rb : class:61
+  ldfld orientation : class:29
+  callvirt 0x0a000045
+  callvirt 0x0a0001a2
+  ldfld x : r4
+  call 0x0a00006e
+  ldfld swimSpeed : r4
+  call 0x0a00006e
+  call 0x0a00006e
+  callvirt 0x0a0001f0
+```
+
+### IsUnderWater
+```
+  ldsfld Instance : class:1328
+  ldfld water : class:29
+  callvirt 0x0a000050
+  ldfld 0x0a000066
+  call 0x0a000045
+  callvirt 0x0a000050
+  ldfld 0x0a000066
+```
+
+### Movement   constants: 3.200000047683716, 0.4000000059604645, 0, 1, 0, 0, 60, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0.20000000298023224, 0.20000000298023224, 0.02500000037252903, 0.5, 0.5, 0, 0.6000000238418579, 0.30000001192092896, 0.009999999776482582, 0.019999999552965164, 0.019999999552965164, 0, 0.019999999552965164, 0, 0.019999999552965164
+```
+  call PlayerMovement.UpdateCollisionChecks
+  stfld x : r4
+  stfld y : r4
+  ldfld dead : bool
+  brfalse.s
+  call PlayerMovement.CheckInput
+  call 0x0a000045
+  callvirt 0x0a000050
+  ldfld 0x0a000066
+  ldc.r4 3.200000047683716
+  call WorldUtility.WorldHeightToBiome
+  brtrue.s
+  ldfld maxSpeed : r4
+  ldc.r4 0.4000000059604645
+  stfld maxSpeed : r4
+  call PlayerMovement.IsUnderWater
+  brfalse.s
+  ldfld rb : class:61
+  callvirt 0x0a000348
+  ldc.r4 0
+  bgt.un.s
+  ldfld rb : class:61
+  ldc.r4 1
+  callvirt 0x0a000207
+  call PlayerMovement.WaterMovement
+  ldfld rb : class:61
+  callvirt 0x0a000348
+  ldc.r4 0
+  ble.un.s
+  ldfld rb : class:61
+  ldc.r4 0
+  callvirt 0x0a000207
+  ldfld grounded : bool
+  brtrue.s
+  ldfld rb : class:61
+  call 0x0a00006f
+  ldfld extraGravity : r4
+  call 0x0a00006e
+  callvirt 0x0a0001f0
+  call PlayerMovement.FindVelRelativeToLook
+  ldfld 0x0a000120
+  ldfld 0x0a000121
+  call PlayerMovement.CounterMovement
+  call PlayerMovement.RampMovement
+  ldfld readyToJump : bool
+  brfalse.s
+  call PlayerMovement.get_jumping
+  brfalse.s
+  ldfld grounded : bool
+  brfalse.s
+  call PlayerMovement.Jump
+  call PlayerMovement.get_crouching
+  brfalse.s
+  ldfld grounded : bool
+  brfalse.s
+  ldfld readyToJump : bool
+  brfalse.s
+  ldfld rb : class:61
+  call 0x0a00006f
+  ldc.r4 60
+  call 0x0a00006e
+  callvirt 0x0a0001f0
+  stloc.s
+  ldfld maxSpeed : r4
+  ldsfld Instance : class:728
+  callvirt PowerupInventory.GetSpeedMultiplier
+  stloc.s
+  ldc.r4 0
+  ble.un.s
+  ldloc.s
+  ble.un.s
+  ldc.r4 0
+  ldc.r4 0
+  bge.un.s
+  ldloc.s
+  bge.un.s
+  ldc.r4 0
+  ldc.r4 0
+  ble.un.s
+  ldloc.s
+  ble.un.s
+  ldc.r4 0
+  stloc.s
+  ldc.r4 0
+  bge.un.s
+  ldloc.s
+  bge.un.s
+  ldc.r4 0
+  stloc.s
+  ldc.r4 1
+  stloc.s
+  ldc.r4 1
+  stloc.s
+  ldfld grounded : bool
+  brtrue.s
+  ldc.r4 0.20000000298023224
+  stloc.s
+  ldc.r4 0.20000000298023224
+  stloc.s
+  call PlayerMovement.IsHoldingAgainstVerticalVel
+  brfalse.s
+  ldfld 0x0a000121
+  ldc.r4 0.02500000037252903
+  call 0x0a000079
+  stloc.s
+  ldloc.s
+  ldc.r4 0.5
+  bge.un.s
+  ldc.r4 0.5
+  stloc.s
+  ldloc.s
+  call 0x0a000079
+  stloc.s
+  ldfld grounded : bool
+  brfalse.s
+  call PlayerMovement.get_crouching
+  brfalse.s
+  ldc.r4 0
+  stloc.s
+  ldfld surfing : bool
+  brfalse.s
+  ldc.r4 0.6000000238418579
+  stloc.s
+  ldc.r4 0.30000001192092896
+  stloc.s
+  ldc.r4 0.009999999776482582
+  stloc.s
+  ldfld rb : class:61
+  ldfld orientation : class:29
+  callvirt 0x0a000056
+  ldloc.s
+  call 0x0a00006e
+  ldfld moveSpeed : r4
+  call 0x0a00006e
+  ldc.r4 0.019999999552965164
+  call 0x0a00006e
+  ldloc.s
+  call 0x0a00006e
+  callvirt 0x0a0001f0
+  ldfld rb : class:61
+  ldfld orientation : class:29
+  callvirt 0x0a0001a2
+  call 0x0a00006e
+  ldfld moveSpeed : r4
+  call 0x0a00006e
+  ldc.r4 0.019999999552965164
+  call 0x0a00006e
+  ldloc.s
+  call 0x0a00006e
+  callvirt 0x0a0001f0
+  ldfld grounded : bool
+  brtrue
+  ldc.r4 0
+  beq.s
+  ldfld rb : class:61
+  ldfld orientation : class:29
+  callvirt 0x0a000056
+  call 0x0a000057
+  ldfld 0x0a000121
+  call 0x0a00006e
+  ldfld moveSpeed : r4
+  call 0x0a00006e
+  ldc.r4 0.019999999552965164
+  call 0x0a00006e
+  ldloc.s
+  call 0x0a00006e
+  callvirt 0x0a0001f0
+  ldloc.s
+  ldc.r4 0
+  beq.s
+  ldfld rb : class:61
+  ldfld orientation : class:29
+  callvirt 0x0a0001a2
+  call 0x0a000057
+  ldfld 0x0a000120
+  call 0x0a00006e
+  ldfld moveSpeed : r4
+  call 0x0a00006e
+  ldc.r4 0.019999999552965164
+  call 0x0a00006e
+  ldloc.s
+  call 0x0a00006e
+  callvirt 0x0a0001f0
+  ldfld readyToJump : bool
+  brtrue.s
+  ldfld resetJumpCounter : i4
+  stfld resetJumpCounter : i4
+  ldfld resetJumpCounter : i4
+  ldfld jumpCounterResetTime : i4
+  blt.s
+  call PlayerMovement.ResetJump
+```
+
+### PushPlayer   constants: 0.30000001192092896
+```
+  stfld pushed : bool
+  ldstr "0x70004cdf"
+  ldc.r4 0.30000001192092896
+  call 0x0a00009a
+```
+
+### ResetPush
+```
+  stfld pushed : bool
+```
+
+### RampMovement   constants: 0.05000000074505806, 0.05000000074505806, 0, 0, 0, 1
+```
+  ldfld grounded : bool
+  brfalse
+  ldfld onRamp : bool
+  brfalse
+  ldfld surfing : bool
+  brtrue
+  call PlayerMovement.get_crouching
+  brtrue
+  call PlayerMovement.get_jumping
+  brtrue
+  ldfld resetJumpCounter : i4
+  ldfld jumpCounterResetTime : i4
+  blt
+  ldfld x : r4
+  call 0x0a000349
+  ldc.r4 0.05000000074505806
+  bge.un
+  ldfld y : r4
+  call 0x0a000349
+  ldc.r4 0.05000000074505806
+  bge.un
+  ldfld pushed : bool
+  brtrue
+  ldfld rb : class:61
+  callvirt 0x0a00034a
+  ldfld rb : class:61
+  callvirt 0x0a000047
+  ldfld 0x0a000066
+  ldc.r4 0
+  ble.un.s
+  ldfld rb : class:61
+  ldfld rb : class:61
+  callvirt 0x0a000047
+  ldfld 0x0a000087
+  ldc.r4 0
+  ldfld rb : class:61
+  callvirt 0x0a000047
+  ldfld 0x0a000088
+  newobj 0x0a00006d
+  callvirt 0x0a000184
+  ldfld rb : class:61
+  callvirt 0x0a000047
+  ldfld 0x0a000066
+  ldc.r4 0
+  bgt.un.s
+  ldarga.s
+  call 0x0a000311
+  call 0x0a000349
+  ldc.r4 1
+  bge.un.s
+  ldfld rb : class:61
+  call 0x0a0000a5
+  callvirt 0x0a000184
+  ldfld rb : class:61
+  callvirt 0x0a00034a
+```
+
+### ResetJump
+```
+  stfld readyToJump : bool
+  ldstr "0x70004cf3"
+  call 0x0a000084
+```
+
+### Jump   constants: 0.25, 1.5, 0.5, 0.5, 0, 0, 0, 2, 2
+```
+  ldfld grounded : bool
+  brtrue.s
+  ldfld surfing : bool
+  brtrue.s
+  ldfld grounded : bool
+  brtrue
+  ldfld jumps : i4
+  ble
+  ldfld readyToJump : bool
+  brfalse
+  ldfld playerStatus : class:552
+  callvirt PlayerStatus.CanJump
+  brfalse
+  ldfld grounded : bool
+  brfalse.s
+  ldsfld Instance : class:728
+  callvirt PowerupInventory.GetExtraJumps
+  stfld jumps : i4
+  ldfld rb : class:61
+  callvirt 0x0a000053
+  ldfld grounded : bool
+  brtrue.s
+  ldfld jumps : i4
+  stfld jumps : i4
+  stfld readyToJump : bool
+  ldstr "0x70004cf3"
+  call 0x0a000084
+  ldstr "0x70004cf3"
+  ldc.r4 0.25
+  call 0x0a00009a
+  stfld resetJumpCounter : i4
+  ldfld jumpForce : r4
+  ldsfld Instance : class:728
+  callvirt PowerupInventory.GetJumpMultiplier
+  ldfld rb : class:61
+  call 0x0a000076
+  call 0x0a00006e
+  ldc.r4 1.5
+  call 0x0a00006e
+  callvirt 0x0a00034b
+  ldfld rb : class:61
+  ldfld normalVector : valuetype:81
+  call 0x0a00006e
+  ldc.r4 0.5
+  call 0x0a00006e
+  callvirt 0x0a00034b
+  ldfld rb : class:61
+  callvirt 0x0a000047
+  ldfld rb : class:61
+  callvirt 0x0a000047
+  ldfld 0x0a000066
+  ldc.r4 0.5
+  bge.un.s
+  ldfld rb : class:61
+  ldfld 0x0a000087
+  ldc.r4 0
+  ldfld 0x0a000088
+  newobj 0x0a00006d
+  callvirt 0x0a000184
+  br.s
+  ldfld rb : class:61
+  callvirt 0x0a000047
+  ldfld 0x0a000066
+  ldc.r4 0
+  ble.un.s
+  ldfld rb : class:61
+  ldfld 0x0a000087
+  ldc.r4 0
+  ldfld 0x0a000088
+  newobj 0x0a00006d
+  callvirt 0x0a000184
+  ldfld playerJumpSmokeFx : class:25
+  call 0x0a000045
+  callvirt 0x0a000050
+  call 0x0a000076
+  call 0x0a000048
+  call 0x2b00000a
+  callvirt 0x2b00000b
+  callvirt 0x0a00020a
+  ldloca.s
+  ldfld rb : class:61
+  callvirt 0x0a000047
+  ldfld 0x0a000087
+  ldc.r4 2
+  call 0x0a00020f
+  call 0x0a0002a1
+  ldloca.s
+  ldfld rb : class:61
+  callvirt 0x0a000047
+  ldfld 0x0a000088
+  ldc.r4 2
+  call 0x0a00020f
+  call 0x0a000210
+  ldfld playerStatus : class:552
+  callvirt PlayerStatus.Jump
+  ldsfld Instance : class:12
+  callvirt AchievementManager.Jump
+```
+
+### JumpCooldown
+```
+  stfld readyToJump : bool
+```
+
+### CounterMovement   constants: 0, 0, 1, 0.019999999552965164, 0.05000000074505806, 0.019999999552965164, 0.05000000074505806, 0.019999999552965164, 0.019999999552965164, 2, 0.019999999552965164, 2, 2, 2, 0.05000000074505806, 0.05000000074505806
+```
+  ldc.r4 0
+  bne.un.s
+  ldc.r4 0
+  bne.un.s
+  ldfld rb : class:61
+  callvirt 0x0a000047
+  ldloca.s
+  call 0x0a000189
+  ldc.r4 1
+  bge.un.s
+  ldfld grounded : bool
+  brfalse.s
+  call PlayerMovement.get_jumping
+  brtrue.s
+  ldfld playerStatus : class:552
+  callvirt PlayerStatus.CanJump
+  brfalse.s
+  ldfld rb : class:61
+  callvirt 0x0a000053
+  br.s
+  ldfld rb : class:61
+  callvirt 0x0a000053
+  ldfld grounded : bool
+  brfalse.s
+  call PlayerMovement.get_jumping
+  brfalse.s
+  ldfld playerStatus : class:552
+  callvirt PlayerStatus.CanJump
+  brfalse.s
+  call PlayerMovement.get_crouching
+  brfalse.s
+  ldfld rb : class:61
+  ldfld moveSpeed : r4
+  ldc.r4 0.019999999552965164
+  ldfld rb : class:61
+  callvirt 0x0a000047
+  ldloca.s
+  call 0x0a0000a0
+  call 0x0a000057
+  call 0x0a0001b9
+  ldfld slideCounterMovement : r4
+  call 0x0a00006e
+  callvirt 0x0a0001f0
+  ldfld 0x0a000120
+  call 0x0a000349
+  ldfld threshold : r4
+  ble.un.s
+  call 0x0a000349
+  ldc.r4 0.05000000074505806
+  bge.un.s
+  ldfld readyToCounterX : i4
+  ble.s
+  ldfld rb : class:61
+  ldfld moveSpeed : r4
+  ldfld orientation : class:29
+  callvirt 0x0a000045
+  callvirt 0x0a0001a2
+  call 0x0a0001b9
+  ldc.r4 0.019999999552965164
+  call 0x0a00006e
+  ldfld 0x0a000120
+  call 0x0a00006e
+  ldfld counterMovement : r4
+  call 0x0a00006e
+  callvirt 0x0a0001f0
+  ldfld 0x0a000121
+  call 0x0a000349
+  ldfld threshold : r4
+  ble.un.s
+  call 0x0a000349
+  ldc.r4 0.05000000074505806
+  bge.un.s
+  ldfld readyToCounterY : i4
+  ble.s
+  ldfld rb : class:61
+  ldfld moveSpeed : r4
+  ldfld orientation : class:29
+  callvirt 0x0a000045
+  callvirt 0x0a000056
+  call 0x0a0001b9
+  ldc.r4 0.019999999552965164
+  call 0x0a00006e
+  ldfld 0x0a000121
+  call 0x0a00006e
+  ldfld counterMovement : r4
+  call 0x0a00006e
+  callvirt 0x0a0001f0
+  call PlayerMovement.IsHoldingAgainstHorizontalVel
+  brfalse.s
+  ldfld rb : class:61
+  ldfld moveSpeed : r4
+  ldfld orientation : class:29
+  callvirt 0x0a000045
+  callvirt 0x0a0001a2
+  call 0x0a0001b9
+  ldc.r4 0.019999999552965164
+  call 0x0a00006e
+  ldfld 0x0a000120
+  call 0x0a00006e
+  ldfld counterMovement : r4
+  call 0x0a00006e
+  ldc.r4 2
+  call 0x0a00006e
+  callvirt 0x0a0001f0
+  call PlayerMovement.IsHoldingAgainstVerticalVel
+  brfalse.s
+  ldfld rb : class:61
+  ldfld moveSpeed : r4
+  ldfld orientation : class:29
+  callvirt 0x0a000045
+  callvirt 0x0a000056
+  call 0x0a0001b9
+  ldc.r4 0.019999999552965164
+  call 0x0a00006e
+  ldfld 0x0a000121
+  call 0x0a00006e
+  ldfld counterMovement : r4
+  call 0x0a00006e
+  ldc.r4 2
+  call 0x0a00006e
+  callvirt 0x0a0001f0
+  ldfld rb : class:61
+  callvirt 0x0a000047
+  ldfld 0x0a000087
+  ldc.r4 2
+  call 0x0a000202
+  ldfld rb : class:61
+  callvirt 0x0a000047
+  ldfld 0x0a000088
+  ldc.r4 2
+  call 0x0a000202
+  call 0x0a000165
+  ldfld maxSpeed : r4
+  ldsfld Instance : class:728
+  callvirt PowerupInventory.GetSpeedMultiplier
+  ble.un.s
+  ldfld rb : class:61
+  callvirt 0x0a000047
+  ldfld 0x0a000066
+  ldfld rb : class:61
+  callvirt 0x0a000047
+  ldloca.s
+  call 0x0a0000a0
+  ldfld maxSpeed : r4
+  call 0x0a00006e
+  ldsfld Instance : class:728
+  callvirt PowerupInventory.GetSpeedMultiplier
+  call 0x0a00006e
+  ldfld rb : class:61
+  ldfld 0x0a000087
+  ldfld 0x0a000088
+  newobj 0x0a00006d
+  callvirt 0x0a000184
+  call 0x0a000349
+  ldc.r4 0.05000000074505806
+  bge.un.s
+  ldfld readyToCounterX : i4
+  stfld readyToCounterX : i4
+  br.s
+  stfld readyToCounterX : i4
+  call 0x0a000349
+  ldc.r4 0.05000000074505806
+  bge.un.s
+  ldfld readyToCounterY : i4
+  stfld readyToCounterY : i4
+  stfld readyToCounterY : i4
+```
+
+### IsHoldingAgainstHorizontalVel   constants: 0, 0
+```
+  ldfld 0x0a000120
+  ldfld threshold : r4
+  bge.un.s
+  ldfld x : r4
+  ldc.r4 0
+  bgt.s
+  ldfld 0x0a000120
+  ldfld threshold : r4
+  ble.un.s
+  ldfld x : r4
+  ldc.r4 0
+```
+
+### IsHoldingAgainstVerticalVel   constants: 0, 0
+```
+  ldfld 0x0a000121
+  ldfld threshold : r4
+  bge.un.s
+  ldfld y : r4
+  ldc.r4 0
+  bgt.s
+  ldfld 0x0a000121
+  ldfld threshold : r4
+  ble.un.s
+  ldfld y : r4
+  ldc.r4 0
+```
+
+### FindVelRelativeToLook   constants: 57.295780181884766, 90, 0.01745329238474369, 0.01745329238474369
+```
+  ldfld orientation : class:29
+  callvirt 0x0a000045
+  callvirt 0x0a0000c3
+  ldfld 0x0a000066
+  ldfld rb : class:61
+  callvirt 0x0a000047
+  ldfld 0x0a000087
+  ldfld rb : class:61
+  callvirt 0x0a000047
+  ldfld 0x0a000088
+  call 0x0a00034c
+  ldc.r4 57.295780181884766
+  call 0x0a00034d
+  ldc.r4 90
+  ldfld rb : class:61
+  callvirt 0x0a000047
+  ldfld 0x0a000087
+  ldfld rb : class:61
+  callvirt 0x0a000047
+  ldfld 0x0a000088
+  newobj 0x0a000130
+  stloc.s
+  ldloca.s
+  call 0x0a000311
+  ldc.r4 0.01745329238474369
+  call 0x0a0002f4
+  ldc.r4 0.01745329238474369
+  call 0x0a0002f4
+  newobj 0x0a000130
+```
+
+### IsFloor
+```
+  call 0x0a000076
+  call 0x0a000078
+  ldfld maxSlopeAngle : r4
+```
+
+### IsSurf   constants: 89
+```
+  call 0x0a000076
+  call 0x0a000078
+  ldc.r4 89
+  bge.un.s
+  ldfld maxSlopeAngle : r4
+```
+
+### IsWall   constants: 90, 0.10000000149011612
+```
+  ldc.r4 90
+  call 0x0a000076
+  call 0x0a000078
+  call 0x0a000349
+  ldc.r4 0.10000000149011612
+```
+
+### IsRoof   constants: -1
+```
+  ldfld 0x0a000066
+  ldc.r4 -1
+```
+
+### OnCollisionEnter   constants: -12, 0, 0, 2, 2
+```
+  callvirt 0x0a00004a
+  callvirt 0x0a00004b
+  callvirt 0x0a00034e
+  ldelema
+  call 0x0a00016d
+  ldfld whatIsGround : valuetype:109
+  call 0x0a000073
+  ldfld whatIsGround : valuetype:109
+  call 0x0a000073
+  ldc.i4.s
+  beq.s
+  call PlayerMovement.IsFloor
+  brfalse
+  ldfld fallSpeed : r4
+  ldc.r4 -12
+  bge.un
+  call MoveCamera.get_Instance
+  ldc.r4 0
+  ldfld fallSpeed : r4
+  ldc.r4 0
+  newobj 0x0a00006d
+  callvirt MoveCamera.BobOnce
+  callvirt 0x0a00034e
+  ldelema
+  call 0x0a00034f
+  ldfld playerSmokeFx : class:25
+  call 0x0a000045
+  callvirt 0x0a000050
+  call 0x0a00009b
+  call 0x0a000048
+  call 0x2b00000a
+  callvirt 0x2b00000b
+  callvirt 0x0a00020a
+  ldloca.s
+  ldfld rb : class:61
+  callvirt 0x0a000047
+  ldfld 0x0a000087
+  ldc.r4 2
+  call 0x0a00020f
+  call 0x0a0002a1
+  ldloca.s
+  ldfld rb : class:61
+  callvirt 0x0a000047
+  ldfld 0x0a000088
+  ldc.r4 2
+  call 0x0a00020f
+  call 0x0a000210
+```
+
+### OnCollisionStay   constants: 1
+```
+  callvirt 0x0a00004a
+  callvirt 0x0a00004b
+  ldfld whatIsGround : valuetype:109
+  call 0x0a000073
+  ldfld whatIsGround : valuetype:109
+  call 0x0a000073
+  ldc.i4.s
+  beq.s
+  br
+  callvirt 0x0a00034e
+  ldelema
+  call 0x0a00016d
+  ldloca.s
+  ldfld 0x0a000087
+  ldfld 0x0a000066
+  call 0x0a000079
+  ldfld 0x0a000088
+  call 0x0a00006d
+  call PlayerMovement.IsFloor
+  brfalse.s
+  ldfld grounded : bool
+  brtrue.s
+  call PlayerMovement.get_crouching
+  call 0x0a000076
+  call 0x0a000078
+  ldc.r4 1
+  ble.un.s
+  stfld onRamp : bool
+  br.s
+  stfld onRamp : bool
+  stfld grounded : bool
+  stfld normalVector : valuetype:81
+  stfld cancellingGrounded : bool
+  stfld groundCancel : i4
+  call PlayerMovement.IsSurf
+  brfalse.s
+  stfld surfing : bool
+  stfld cancellingSurf : bool
+  stfld surfCancel : i4
+  callvirt 0x0a000350
+  blt
+```
+
+### UpdateCollisionChecks
+```
+  ldfld cancellingGrounded : bool
+  brtrue.s
+  stfld cancellingGrounded : bool
+  br.s
+  ldfld groundCancel : i4
+  stfld groundCancel : i4
+  ldfld groundCancel : i4
+  ldfld delay : r4
+  ble.un.s
+  call PlayerMovement.StopGrounded
+  ldfld cancellingSurf : bool
+  brtrue.s
+  stfld cancellingSurf : bool
+  stfld surfCancel : i4
+  ldfld surfCancel : i4
+  stfld surfCancel : i4
+  ldfld surfCancel : i4
+  ldfld delay : r4
+  ble.un.s
+  call PlayerMovement.StopSurf
+```
+
+### StopGrounded
+```
+  stfld grounded : bool
+```
+
+### StopSurf
+```
+  stfld surfing : bool
+```
+
+### GetVelocity
+```
+  ldfld rb : class:61
+  callvirt 0x0a000047
+```
+
+### GetFallSpeed
+```
+  ldfld rb : class:61
+  callvirt 0x0a000047
+  ldfld 0x0a000066
+```
+
+### GetPlayerCollider
+```
+  ldfld playerCollider : class:157
+```
+
+### GetPlayerCamTransform
+```
+  ldfld playerCam : class:29
+  callvirt 0x0a000045
+```
+
+### HitPoint   constants: 100, 100
+```
+  ldfld playerCam : class:29
+  callvirt 0x0a000045
+  callvirt 0x0a000050
+  ldfld playerCam : class:29
+  callvirt 0x0a000045
+  callvirt 0x0a000056
+  ldc.r4 100
+  ldfld whatIsHittable : valuetype:109
+  call 0x0a000073
+  call 0x0a000180
+  bge.s
+  ldfld playerCam : class:29
+  callvirt 0x0a000045
+  callvirt 0x0a000050
+  ldfld playerCam : class:29
+  callvirt 0x0a000045
+  callvirt 0x0a000056
+  ldc.r4 100
+  call 0x0a00006e
+  call 0x0a000070
+  ble
+  br.s
+  ldelema
+  call 0x0a00016b
+  callvirt 0x0a00001f
+  callvirt 0x0a00004b
+  ldstr "0x70000d6b"
+  call 0x0a00004c
+  beq.s
+  ldelema
+  call 0x0a00016b
+  callvirt 0x0a00001f
+  callvirt 0x0a00004b
+  ldstr "0x70001849"
+  call 0x0a00004c
+  beq.s
+  ldelema
+  call 0x0a00016b
+  callvirt 0x0a00001f
+  callvirt 0x0a00004b
+  ldstr "0x70001119"
+  call 0x0a00004c
+  bne.un.s
+  ldelema
+  call 0x0a000075
+  blt.s
+  ldelema
+  call 0x0a000075
+```
+
+### IsDead
+```
+  ldfld dead : bool
+```
+
+### GetRb
+```
+  ldfld rb : class:61
+```
+
+### .ctor   constants: 3500, 6.5, 13, 6.5, 5, 1, 1.0499999523162842, 1, 800, 0.11999999731779099, 0.25, 12, 50, 0.14000000059604645, 0.009999999776482582, 50, 5
+```
+  ldc.r4 3500
+  stfld moveSpeed : r4
+  ldc.r4 6.5
+  stfld maxWalkSpeed : r4
+  ldc.r4 13
+  stfld maxRunSpeed : r4
+  ldc.r4 6.5
+  stfld maxSpeed : r4
+  ldc.r4 5
+  stfld extraGravity : r4
+  ldc.r4 1
+  ldc.r4 1.0499999523162842
+  ldc.r4 1
+  newobj 0x0a00006d
+  stfld crouchScale : valuetype:81
+  ldc.r4 800
+  stfld slideForce : r4
+  ldc.r4 0.11999999731779099
+  stfld slideCounterMovement : r4
+  stfld readyToJump : bool
+  ldc.r4 0.25
+  stfld jumpCooldown : r4
+  ldc.r4 12
+  stfld jumpForce : r4
+  stfld jumps : i4
+  ldc.r4 50
+  stfld swimSpeed : r4
+  ldc.i4.s
+  stfld jumpCounterResetTime : i4
+  ldc.r4 0.14000000059604645
+  stfld counterMovement : r4
+  ldc.r4 0.009999999776482582
+  stfld threshold : r4
+  ldc.r4 50
+  stfld maxSlopeAngle : r4
+  ldc.r4 5
+  stfld delay : r4
+  call 0x0a000023
+```
+
+## Boat
+
+### get_waterHeight
+```
+  ldfld <waterHeight>k__BackingField : r4
+```
+
+### set_waterHeight
+```
+  stfld <waterHeight>k__BackingField : r4
+```
+
+### Start   constants: 0.5, 1, 0.5, 10, 50, 1, 1
+```
+  call 0x2b000010
+  stfld rb : class:61
+  newobj 0x0a00007d
+  stfld guardians : class:113<class:1128>
+  call GameManager.GetSeed
+  newobj ConsistentRandom..ctor
+  stfld rand : class:904
+  stsfld Instance : class:44
+  ldstr "0x70000e67"
+  ldc.r4 0.5
+  ldc.r4 1
+  call 0x0a00007e
+  ldfld objectivePing : class:25
+  call 0x0a000045
+  callvirt 0x0a000050
+  call 0x0a00007f
+  call 0x2b00000a
+  callvirt 0x2b000011
+  stfld boatPing : class:512
+  ldfld boatPing : class:512
+  ldstr "0x70000e7d"
+  callvirt ObjectivePing.SetText
+  ldfld boatPing : class:512
+  callvirt 0x0a00001f
+  callvirt 0x0a000080
+  br
+  ldfld rand : class:904
+  callvirt 0x0a00006c
+  ldc.r8 0.5
+  ble.un.s
+  ldfld holes : class:25[]
+  call 0x0a000020
+  br.s
+  ldfld holes : class:25[]
+  callvirt 0x0a00007a
+  callvirt 0x0a000050
+  ldfld 0x0a000066
+  call 0x0a000076
+  ldc.r4 10
+  call 0x0a00006e
+  call 0x0a000070
+  call 0x0a00006f
+  ldloca.s
+  ldc.r4 50
+  ldsfld instance : class:796
+  ldfld whatIsGround : valuetype:109
+  call 0x0a000073
+  call 0x0a000074
+  brfalse.s
+  ldloca.s
+  call 0x0a000075
+  ldfld 0x0a000066
+  ble.un.s
+  ldfld holes : class:25[]
+  call 0x0a000020
+  ldfld holes : class:25[]
+  blt
+  call 0x0a00001f
+  ldtoken
+  call 0x0a000081
+  callvirt 0x0a000082
+  stfld repairs : class:133[]
+  ldfld repairs : class:133[]
+  stloc.s
+  br.s
+  ldloc.s
+  castclass
+  stloc.s
+  ldsfld Instance : class:600
+  callvirt ResourceManager.GetNextId
+  stloc.s
+  ldloc.s
+  ldloc.s
+  callvirt RepairInteract.SetId
+  ldsfld Instance : class:600
+  ldloc.s
+  ldloc.s
+  callvirt 0x0a00001f
+  callvirt ResourceManager.AddObject
+  ldloc.s
+  stloc.s
+  ldloc.s
+  blt.s
+  ldsfld serverOwner : bool
+  brfalse.s
+  ldstr "0x70000e81"
+  ldc.r4 1
+  ldc.r4 1
+  call 0x0a00007e
+  ldfld repairs : class:133[]
+  stloc.s
+  br.s
+  ldloc.s
+  castclass
+  ldloc.s
+  stloc.s
+  ldloc.s
+  blt.s
+  call 0x0a00001f
+  ldstr "0x70000e97"
+  callvirt 0x0a000083
+```
+
+### LeaveIsland
+```
+  ldfld status : valuetype:1368
+  bne.un.s
+  stfld status : valuetype:1368
+  ldsfld instance : class:796
+  stfld boatLeft : bool
+  stfld sinking : bool
+  ldfld wheelInteract : class:256
+  callvirt 0x0a00001f
+  call 0x0a000020
+  ldfld wheelPing : class:512
+  callvirt 0x0a00001f
+  call 0x0a000020
+  ldsfld Instance : class:552
+  callvirt PlayerStatus.EnterOcean
+  ldsfld Instance : class:12
+  callvirt AchievementManager.LeaveMuck
+```
+
+### FixedUpdate
+```
+  ldfld sinking : bool
+  brfalse.s
+  call Boat.MoveBoat
+```
+
+### MoveBoat   constants: 2, 85, 0.8500000238418579, 0.15000000596046448, 1, 1
+```
+  ldc.r4 2
+  call 0x0a000076
+  call 0x0a00006e
+  call 0x0a00005c
+  call 0x0a00006e
+  ldsfld Instance : class:1328
+  ldfld water : class:29
+  callvirt 0x0a000050
+  call 0x0a000070
+  callvirt 0x0a000085
+  ldsfld Instance : class:1328
+  ldfld water : class:29
+  callvirt 0x0a000050
+  ldfld 0x0a000066
+  ldfld rb : class:61
+  callvirt 0x0a000086
+  ldfld 0x0a000066
+  ldfld heightUnderWater : r4
+  bge.un.s
+  ldfld waterSfx : class:25
+  callvirt 0x0a000061
+  brtrue.s
+  ldfld waterSfx : class:25
+  callvirt 0x0a000080
+  ldfld rb : class:61
+  call 0x0a000045
+  callvirt 0x0a000050
+  ldfld 0x0a000087
+  ldfld heightUnderWater : r4
+  call 0x0a000045
+  callvirt 0x0a000050
+  ldfld 0x0a000088
+  newobj 0x0a00006d
+  callvirt 0x0a000089
+  ldc.r4 85
+  ble.un
+  stfld sinking : bool
+  ldsfld serverOwner : bool
+  brfalse
+  ldc.r4 0.8500000238418579
+  ldc.r4 0.15000000596046448
+  ldsfld instance : class:796
+  callvirt GameManager.GetPlayersAlive
+  ldsfld Instance : class:468
+  callvirt MobManager.GetNextId
+  stloc.s
+  ldsfld Instance : class:476
+  ldloc.s
+  ldfld dragonBoss : class:784
+  callvirt MobType.get_id
+  ldfld dragonSpawnPos : class:29
+  callvirt 0x0a000050
+  ldc.r4 1
+  callvirt MobSpawner.ServerSpawnNewMob
+  newobj 0x0a00008a
+  stloc.s
+  ldsfld Instance : class:468
+  ldfld mobs : class:137<i4,class:760>
+  callvirt 0x0a00008b
+  callvirt 0x0a00008c
+  stloc.s
+  br.s
+  ldloca.s
+  call 0x0a00008d
+  stloc.s
+  ldloc.s
+  ldloc.s
+  callvirt 0x0a00008e
+  ldloca.s
+  call 0x0a00008f
+  brtrue.s
+  leave.s
+  ldloca.s
+  constrained.
+  callvirt 0x0a00000a
+  stloc.s
+  br.s
+  ldloc.s
+  ldloc.s
+  callvirt 0x0a000090
+  callvirt Mob.get_hitable
+  ldloc.s
+  ldloc.s
+  callvirt 0x0a000090
+  callvirt Mob.get_hitable
+  ldfld maxHp : i4
+  ldc.r4 1
+  ldloc.s
+  ldloc.s
+  callvirt 0x0a000090
+  callvirt 0x0a000045
+  callvirt 0x0a000050
+  callvirt Hitable.Hit
+  ldloc.s
+  stloc.s
+  ldloc.s
+  ldloc.s
+  callvirt 0x0a000091
+  blt.s
+```
+
+### BoatFinished
+```
+  ldfld wheel : class:25
+  callvirt 0x0a000080
+  ldfld objectivePing : class:25
+  ldfld wheel : class:25
+  callvirt 0x0a00007a
+  callvirt 0x0a000050
+  call 0x0a00007f
+  call 0x2b00000a
+  callvirt 0x2b000011
+  stfld wheelPing : class:512
+  ldfld wheelPing : class:512
+  ldstr "0x70000ed1"
+  callvirt ObjectivePing.SetText
+  ldfld wheel : class:25
+  callvirt 0x2b000012
+  stfld wheelInteract : class:256
+  ldfld wheelInteract : class:256
+  callvirt FinishGameInteract.SetId
+  ldsfld Instance : class:600
+  ldfld wheelInteract : class:256
+  callvirt 0x0a00001f
+  callvirt ResourceManager.AddObject
+```
+
+### CheckBoatFullyRepaired
+```
+  ldfld repairs : class:133[]
+  br.s
+  call 0x0a000060
+  brtrue.s
+  blt.s
+```
+
+### CheckForMap
+```
+  ldfld status : valuetype:1368
+  brtrue.s
+  ldsfld Instance : class:712
+  ldfld cells : class:113<class:704>
+  callvirt 0x0a000092
+  br.s
+  ldloca.s
+  call 0x0a000093
+  ldfld currentItem : class:708
+  call 0x0a000060
+  brtrue.s
+  ldfld currentItem : class:708
+  ldfld id : i4
+  ldfld mapItem : class:708
+  ldfld id : i4
+  bne.un.s
+  call Boat.SendMarkShip
+  ldloca.s
+  call 0x0a000094
+  brtrue.s
+  leave.s
+  ldloca.s
+  constrained.
+  callvirt 0x0a00000a
+  ldfld gemsDiscovered : bool
+  brtrue.s
+  ldsfld Instance : class:712
+  ldfld cells : class:113<class:704>
+  callvirt 0x0a000092
+  br.s
+  ldloca.s
+  call 0x0a000093
+  ldfld currentItem : class:708
+  call 0x0a000060
+  brtrue.s
+  ldfld currentItem : class:708
+  ldfld id : i4
+  ldfld gemMap : class:708
+  ldfld id : i4
+  bne.un.s
+  call Boat.SendMarkGems
+  ldloca.s
+  call 0x0a000094
+  brtrue.s
+  leave.s
+  ldloca.s
+  constrained.
+  callvirt 0x0a00000a
+```
+
+### MarkGems   constants: 1, 1
+```
+  stfld gemsDiscovered : bool
+  ldfld guardians : class:113<class:1128>
+  callvirt 0x0a000095
+  br.s
+  ldloca.s
+  call 0x0a000096
+  call 0x0a000035
+  brfalse.s
+  ldsfld Instance : class:972
+  callvirt 0x0a000045
+  ldfld gemTexture : class:125
+  ldfld type : valuetype:1416
+  call Guardian.TypeToColor
+  ldstr "0x70000e7d"
+  ldc.r4 1
+  callvirt Map.AddMarker
+  ldsfld Instance : class:972
+  callvirt 0x0a000045
+  ldfld gemTexture : class:125
+  ldfld type : valuetype:1416
+  call Guardian.TypeToColor
+  ldstr "0x70000e7d"
+  ldc.r4 1
+  callvirt Map.AddMarker
+  ldloca.s
+  call 0x0a000097
+  brtrue.s
+  leave.s
+  ldloca.s
+  constrained.
+  callvirt 0x0a00000a
+  ldsfld Instance : class:108
+  ldstr "0x70000ed3"
+  ldsfld map : valuetype:233
+  box
+  call 0x0a00006a
+  ldstr "0x70000ed1"
+  callvirt ChatBox.AppendMessage
+```
+
+### CheckFound   constants: 40
+```
+  ldfld status : valuetype:1368
+  brfalse.s
+  ldfld status : valuetype:1368
+  beq.s
+  call PlayerMovement.get_Instance
+  call 0x0a000032
+  brtrue.s
+  call PlayerMovement.get_Instance
+  callvirt 0x0a000045
+  callvirt 0x0a000050
+  call 0x0a000045
+  callvirt 0x0a000050
+  call 0x0a000098
+  ldc.r4 40
+  bge.un.s
+  call Boat.SendShipFound
+```
+
+### FindShip   constants: 1
+```
+  stfld status : valuetype:1368
+  ldfld boatPing : class:512
+  callvirt 0x0a00001f
+  call 0x0a000020
+  ldsfld Instance : class:972
+  call 0x0a000045
+  ldfld boatTexture : class:125
+  call 0x0a000099
+  ldstr "0x70000f6c"
+  ldc.r4 1
+  callvirt Map.AddMarker
+  ldsfld Instance : class:108
+  ldstr "0x70000f80"
+  ldsfld map : valuetype:233
+  box
+  call 0x0a00006a
+  ldstr "0x70000ed1"
+  callvirt ChatBox.AppendMessage
+```
+
+### MarkShip   constants: 1
+```
+  stfld status : valuetype:1368
+  ldfld boatPing : class:512
+  callvirt 0x0a00001f
+  callvirt 0x0a000080
+  ldsfld Instance : class:108
+  ldstr "0x70001019"
+  ldsfld map : valuetype:233
+  box
+  call 0x0a00006a
+  ldstr "0x70000ed1"
+  callvirt ChatBox.AppendMessage
+  ldsfld Instance : class:972
+  call 0x0a000045
+  call 0x0a000099
+  ldstr "0x70000ed1"
+  ldc.r4 1
+  callvirt Map.AddMarker
+```
+
+### .ctor   constants: 3, 20
+```
+  ldc.r4 3
+  stfld heightUnderWater : r4
+  ldc.r4 20
+  stfld amp : r4
+  call 0x0a000023
+```

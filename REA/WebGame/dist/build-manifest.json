@@ -1,0 +1,72 @@
+{
+  "name": "Tidebreak",
+  "built": "2026-10-19T17:11:06.494Z",
+  "entry": "dist/tidebreak.html",
+  "bytes": 723258,
+  "modules": [
+    {
+      "file": "vendor/three.min.js",
+      "bytes": 603445
+    },
+    {
+      "file": "css/hud.css",
+      "bytes": 10273
+    },
+    {
+      "file": "js/core.js",
+      "bytes": 5741
+    },
+    {
+      "file": "js/world.js",
+      "bytes": 17521
+    },
+    {
+      "file": "js/catalog.js",
+      "bytes": 3614
+    },
+    {
+      "file": "js/vitals.js",
+      "bytes": 3300
+    },
+    {
+      "file": "js/inventory.js",
+      "bytes": 3665
+    },
+    {
+      "file": "js/creatures.js",
+      "bytes": 6933
+    },
+    {
+      "file": "js/player.js",
+      "bytes": 14067
+    },
+    {
+      "file": "js/boat.js",
+      "bytes": 8462
+    },
+    {
+      "file": "js/fishing.js",
+      "bytes": 9994
+    },
+    {
+      "file": "js/bait.js",
+      "bytes": 2380
+    },
+    {
+      "file": "js/journal.js",
+      "bytes": 3678
+    },
+    {
+      "file": "js/ai.js",
+      "bytes": 5599
+    },
+    {
+      "file": "js/hud.js",
+      "bytes": 6096
+    },
+    {
+      "file": "js/game.js",
+      "bytes": 13740
+    }
+  ]
+}

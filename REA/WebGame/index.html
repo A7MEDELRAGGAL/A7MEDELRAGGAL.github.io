@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+<title>Tidebreak</title>
+<link rel="stylesheet" href="css/hud.css" />
+</head>
+<body>
+<div id="app">
+  <canvas id="view"></canvas>
+
+  <div id="overlay">
+    <div id="crosshair"></div>
+
+    <div id="topleft" class="panel">
+      <div class="name">Tidebreak</div>
+      <div class="hint" id="hint">Click to look around</div>
+    </div>
+
+    <div id="prompt" class="prompt hidden"></div>
+
+    <div id="vitals" class="panel">
+      <div class="bar"><span class="label">Health</span><div class="track"><i id="barHealth"></i></div><b id="numHealth">100</b></div>
+      <div class="bar"><span class="label">Full</span><div class="track"><i id="barFull"></i></div><b id="numFull">100</b></div>
+      <div class="bar thin"><span class="label">Poison</span><div class="track"><i id="barPoison" class="poison"></i></div><b id="numPoison">0</b></div>
+      <div class="bar thin"><span class="label">Fire</span><div class="track"><i id="barFire" class="fire"></i></div><b id="numFire">0</b></div>
+    </div>
+
+    <div id="rodstrip" class="panel hidden">
+      <div class="rodsub" id="rodLabel">Rod</div>
+      <div class="rodtrack"><i id="barBite"></i></div>
+      <div class="rodline" id="rodLine"></div>
+    </div>
+
+    <div id="hotbar"></div>
+
+    <div id="weight" class="panel">
+      <span class="label">Load</span>
+      <div class="track"><i id="barWeight"></i></div>
+      <b id="numWeight">0.0</b>
+    </div>
+
+    <div id="status" class="panel hidden"></div>
+
+    <div id="menu" class="menu">
+      <div class="card">
+        <h1>Tidebreak</h1>
+        <p class="sub">An open-water fishing sandbox. Original code, art and text.</p>
+        <div class="keys">
+          <div><b>W A S D</b> move</div>
+          <div><b>Mouse</b> look</div>
+          <div><b>Space</b> jump / swim up</div>
+          <div><b>Shift</b> sprint</div>
+          <div><b>C</b> crouch / swim down</div>
+          <div><b>F</b> enter or leave a boat</div>
+          <div><b>Left mouse</b> use rod, swing, eat held</div>
+          <div><b>1 – 9</b> select slot</div>
+          <div><b>Wheel</b> cycle slots</div>
+          <div><b>B</b> set bait</div>
+          <div><b>G</b> drop</div>
+          <div><b>R</b> consume</div>
+          <div><b>M</b> seed a new island chain</div>
+        </div>
+        <button id="playBtn">Cast off</button>
+      </div>
+    </div>
+
+    <div id="toast" class="toast hidden"></div>
+
+    <div id="aiChat" class="aichat hidden">
+      <div class="aichat-head">
+        <span class="aichat-title">Dockhand</span>
+        <span id="aiChatStatus" class="aichat-status"></span>
+        <button id="aiChatClose" class="aichat-x" type="button">x</button>
+      </div>
+      <div id="aiChatLog" class="aichat-log"></div>
+      <div class="aichat-key">
+        <input id="aiChatKey" type="password" placeholder="paste your API key" autocomplete="off" />
+        <button id="aiChatKeySave" type="button">save</button>
+      </div>
+      <form id="aiChatForm" class="aichat-form">
+        <select id="aiChatModel" class="aichat-model"></select>
+        <input id="aiChatInput" type="text" placeholder="ask the dockhand..." autocomplete="off" />
+        <button type="submit" class="aichat-send">send</button>
+      </form>
+    </div>
+
+    <div id="journal" class="journal hidden">
+      <div class="journal-head">
+        <span class="journal-title">Journal</span>
+        <span id="journalStats" class="journal-stats"></span>
+        <button id="journalClose" class="aichat-x" type="button">x</button>
+      </div>
+      <input id="journalSearch" class="journal-search" type="text" placeholder="search your records..." autocomplete="off" />
+      <div id="journalList" class="journal-list"></div>
+      <div class="journal-foot">
+        <button id="journalPrev" class="journal-nav" type="button">&lt; prev</button>
+        <span id="journalPage" class="journal-page">0 / 0</span>
+        <button id="journalNext" class="journal-nav" type="button">next &gt;</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="crash" class="crash hidden"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="js/core.js"></script>
+<script src="js/world.js"></script>
+<script src="js/catalog.js"></script>
+<script src="js/vitals.js"></script>
+<script src="js/inventory.js"></script>
+<script src="js/creatures.js"></script>
+<script src="js/player.js"></script>
+<script src="js/boat.js"></script>
+<script src="js/fishing.js"></script>
+<script src="js/bait.js"></script>
+<script src="js/journal.js"></script>
+<script src="js/ai.js"></script>
+    <script src="js/hud.js"></script>
+<script src="js/game.js"></script>
+</body>
+</html>
