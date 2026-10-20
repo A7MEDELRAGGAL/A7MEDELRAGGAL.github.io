@@ -109,6 +109,7 @@ namespace Clone.Player
         [Server]
         private void ServerRespawnOrResurrect()
         {
+            Clone.World.CloneRunManager.Instance?.NotifyPlayerDeath();
             _health.Value = MaxHealth * 0.5f;
             _fullness.Value = MaxFullness * 0.5f;
             _poison.Value = 0f;
