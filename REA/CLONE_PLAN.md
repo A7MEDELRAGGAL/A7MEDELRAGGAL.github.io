@@ -80,4 +80,4 @@ Now the plan is in progress.
 | Day/night + spawn waves | [x] | [ ] |
 | Currency & perks | [x] | [ ] |
 | Save/load + auto-save | [x] | [ ] |
-| Full loop: run, die, restart | [ ] | [ ] |
+| Full loop: run, die, restart | [x] | [ ] |

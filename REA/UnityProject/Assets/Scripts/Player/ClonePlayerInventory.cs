@@ -295,6 +295,8 @@ namespace Clone.Player
         [ServerRpc]
         private void ServerRequestSetBaitFromSelected()
         {
+            if (!IsOwner) return;
+
             CloneInventorySlot selected = SelectedSlotData;
             ApplySetBait(selected != null && !selected.IsEmpty
                 ? selected.ItemId
