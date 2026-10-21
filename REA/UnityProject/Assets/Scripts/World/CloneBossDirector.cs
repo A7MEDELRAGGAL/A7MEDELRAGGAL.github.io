@@ -11,7 +11,7 @@ namespace Clone.World
         public static CloneBossDirector Instance { get; private set; }
 
         [SerializeField]
-        private CloneCreature _bossPrefab;
+        private BossCloneCreature _bossPrefab;
 
         [SerializeField]
         private float _intervalSeconds = 240f;

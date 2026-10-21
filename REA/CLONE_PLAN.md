@@ -82,6 +82,7 @@ Now the plan is in progress.
 | Save/load + auto-save | [x] | [ ] |
 | Full loop: run, die, restart | [x] | [ ] |
 | Chest loot tables + boss key drop | [x] | [ ] |
+| Craftable gear/weapons progression | [ ] | [ ] |
 
 ## Milestone 10: Chest Loot Tables + Boss Key Drop (Muck premise: boss creatures drop a key)
 Clean-room decisions (no source/constants copied):
@@ -91,3 +92,12 @@ Clean-room decisions (no source/constants copied):
 - Boss creature: `BossCloneCreature : CloneCreature` with `ServerDie` override — award the boss key item before the existing `Despawn(true)`.
 - Boss spawn director mirrors the observed dragon spawn pattern (water/owner gates, weighted position choice, `ServerSpawnNewMob` style) — see artifacts/rea-muck-il.txt dragon IL notes.
 - `locked[]` chest semantics observed in artifacts are acknowledged and intentionally NOT replicated (keep first-open roll simple).
+
+## Milestone 11: Craftable gear/weapons progression
+Clean-room decisions (no source/constants copied):
+- Craft UI: cell-grid chest; recipes client-safe, server-authoritative.
+- Gear: per-piece stat tariffs (agility/health-regen/stamina/encumbrance tiers).
+- Armor mitigation: ServerDamage %; regen via ServerTickVitals.
+- Encumbrance scales FpsPlayerMotor speed constants at one point; ratios preserved.
+- Save: update SaveLoad scripts.
+- Do not transcribe names/strings/constants; original code only.
