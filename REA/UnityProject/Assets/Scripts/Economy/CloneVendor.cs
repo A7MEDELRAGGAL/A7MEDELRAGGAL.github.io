@@ -13,7 +13,7 @@ namespace Clone.Economy
 
         public IReadOnlyList<ClonePurchasable> Stock => _stock;
 
-        [ServerRpc]
+        [ServerRpc(RequireOwnership = false)]
         public void ServerRequestPurchase(int index)
         {
             if (index < 0 || index >= _stock.Count)
@@ -23,7 +23,7 @@ namespace Clone.Economy
             if (!entry.Unlocked || entry.Price <= 0)
                 return;
 
-            var player = ClonePlayer.LocalPlayer;
+            var player = Owner?.GetComponent<ClonePlayer>();
             if (player == null)
                 return;
 

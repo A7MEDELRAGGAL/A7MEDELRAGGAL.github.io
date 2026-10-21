@@ -78,6 +78,68 @@ namespace Clone.World
             return IsValidViewSlot(slot) ? _viewCookness[slot] : 0f;
         }
 
+        private struct LootEntry
+        {
+            public int ItemId;
+            public int Amount;
+            public float Weight;
+        }
+
+        private static readonly LootEntry[] LootTable = new LootEntry[]
+        {
+            new LootEntry { ItemId = 1, Amount = 1, Weight = 0.6f },
+            new LootEntry { ItemId = 2, Amount = 1, Weight = 0.6f },
+            new LootEntry { ItemId = 3, Amount = 1, Weight = 0.8f },
+            new LootEntry { ItemId = 4, Amount = 1, Weight = 0.5f },
+            new LootEntry { ItemId = 5, Amount = 1, Weight = 0.8f },
+            new LootEntry { ItemId = 6, Amount = 3, Weight = 1.2f },
+            new LootEntry { ItemId = 7, Amount = 2, Weight = 1.0f },
+            new LootEntry { ItemId = 8, Amount = 6, Weight = 3.0f },
+            new LootEntry { ItemId = 9, Amount = 4, Weight = 2.5f },
+            new LootEntry { ItemId = 10, Amount = 5, Weight = 2.5f },
+            new LootEntry { ItemId = 11, Amount = 3, Weight = 4.0f },
+            new LootEntry { ItemId = 12, Amount = 2, Weight = 3.0f },
+            new LootEntry { ItemId = 13, Amount = 2, Weight = 3.0f },
+            new LootEntry { ItemId = 14, Amount = 3, Weight = 3.5f },
+            new LootEntry { ItemId = 15, Amount = 2, Weight = 3.5f },
+            new LootEntry { ItemId = 16, Amount = 4, Weight = 3.0f },
+            new LootEntry { ItemId = 17, Amount = 5, Weight = 4.0f },
+            new LootEntry { ItemId = 18, Amount = 3, Weight = 2.0f },
+            new LootEntry { ItemId = 19, Amount = 2, Weight = 1.5f },
+            new LootEntry { ItemId = 20, Amount = 4, Weight = 2.5f },
+        };
+
+        private bool _lootRolled;
+
+        private void RollLoot()
+        {
+            float total = 0f;
+            for (int i = 0; i < LootTable.Length; i++)
+            {
+                total += LootTable[i].Weight;
+            }
+
+            for (int slot = 0; slot < ChestSlotCount; slot++)
+            {
+                float pick = UnityEngine.Random.Range(0f, total);
+                LootEntry chosen = LootTable[LootTable.Length - 1];
+                for (int i = 0; i < LootTable.Length; i++)
+                {
+                    pick -= LootTable[i].Weight;
+                    if (pick <= 0f)
+                    {
+                        chosen = LootTable[i];
+                        break;
+                    }
+                }
+
+                _itemId[slot] = chosen.ItemId;
+                _amount[slot] = chosen.Amount;
+                _skinId[slot] = 0;
+                _cookness[slot] = 0f;
+            }
+        }
+
         private static bool IsValidViewSlot(int slot)
         {
             return slot >= 0 && slot < ChestSlotCount;
@@ -87,6 +149,11 @@ namespace Clone.World
         public void ServerRequestOpenChest()
         {
             _open.Value = true;
+            if (!_lootRolled)
+            {
+                _lootRolled = true;
+                RollLoot();
+            }
             BroadcastOpened();
             SyncChestState(-1, CloneInventorySlot.EmptyId, 0, 0);
         }

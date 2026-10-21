@@ -81,3 +81,13 @@ Now the plan is in progress.
 | Currency & perks | [x] | [ ] |
 | Save/load + auto-save | [x] | [ ] |
 | Full loop: run, die, restart | [x] | [ ] |
+| Chest loot tables + boss key drop | [x] | [ ] |
+
+## Milestone 10: Chest Loot Tables + Boss Key Drop (Muck premise: boss creatures drop a key)
+Clean-room decisions (no source/constants copied):
+- Loot entries: `struct CloneChestLootEntry { int ItemId; int Amount; float Weight; }` — weight-pick roll, schema follows the existing `ClonePurchasable` entry precedent.
+- `World/CloneChest.cs`: server-side weighted roll on FIRST open (open ServerRpc path), skips already-occupied slots; rolled items land in empty chest slots via the existing store path so `SyncChestState`/`BroadcastChestState` handles replication.
+- Boss key: item ID 21, resource category, registered in `CloneItemCatalog.BuildDefaultCatalog()`; no unique prefab needed because `CloneLibrary.GetPrefab` falls back to `ResourcePrefab` for resources.
+- Boss creature: `BossCloneCreature : CloneCreature` with `ServerDie` override — award the boss key item before the existing `Despawn(true)`.
+- Boss spawn director mirrors the observed dragon spawn pattern (water/owner gates, weighted position choice, `ServerSpawnNewMob` style) — see artifacts/rea-muck-il.txt dragon IL notes.
+- `locked[]` chest semantics observed in artifacts are acknowledged and intentionally NOT replicated (keep first-open roll simple).

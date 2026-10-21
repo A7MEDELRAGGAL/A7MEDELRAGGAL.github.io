@@ -23,7 +23,8 @@ namespace Clone.Items
         public const int Berry = 17;
         public const int Bandage = 18;
         public const int Antidote = 19;
-        public const int KelpWrack = 20;
+	public const int KelpWrack = 20;
+	public const int BossKey = 21;
 
         private static readonly Dictionary<int, CloneItemDefinition> Definitions =
             new Dictionary<int, CloneItemDefinition>();
@@ -240,8 +241,14 @@ namespace Clone.Items
             antidote.MaxStack = 4;
             antidote.HealthRestore = 4f;
             antidote.PoisonCure = 100f;
-            antidote.FireCure = 60f;
-            Register(antidote);
-        }
+			antidote.FireCure = 60f;
+			Register(antidote);
+
+			CloneItemDefinition bossKey = Create(BossKey, "Boss Key", CloneItemCategory.Resource);
+			bossKey.Weight = 0.5f;
+			bossKey.MaxStack = 1;
+			bossKey.Stackable = false;
+			Register(bossKey);
+		}
     }
 }
