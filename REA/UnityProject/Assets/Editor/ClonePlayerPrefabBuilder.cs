@@ -37,6 +37,10 @@ namespace Clone.Editor
             root.AddComponent<ClonePlayerMovement>();
             root.AddComponent<ClonePlayerVitals>();
             root.AddComponent<ClonePlayerInventory>();
+            root.AddComponent<ClonePlayerHolding>();
+            root.AddComponent<ClonePlayerEquipment>();
+            root.AddComponent<Crafting.CloneCraftingManager>();
+            root.AddComponent<CloneJournal>();
             root.AddComponent<CloneCurrency>();
 
             root.AddComponent<NetworkObject>();

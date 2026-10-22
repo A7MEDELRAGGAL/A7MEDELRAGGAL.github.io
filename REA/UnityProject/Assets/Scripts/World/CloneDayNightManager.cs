@@ -10,7 +10,7 @@ namespace Clone.World
         private float dayLengthSeconds = 600f;
 
         [SerializeField]
-        private Light sun;
+        public Light sun;
 
         private int dayNumber = 1;
         private float timeOfDay;

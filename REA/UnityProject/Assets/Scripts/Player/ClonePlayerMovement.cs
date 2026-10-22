@@ -12,6 +12,7 @@ namespace Clone.Player
         public float CrouchSpeed = 2.1f;
         public float AirControl = 0.35f;
         public float MoveAcceleration = 70f;
+        public float SpeedScale = 1f;
 
         [Header("Jump / Ground")]
         public float JumpVelocity = 6f;
@@ -158,6 +159,7 @@ namespace Clone.Player
             float speed = IsCrouching ? CrouchSpeed
                 : Input.GetKey(KeyCode.LeftShift) ? SprintSpeed
                 : WalkSpeed;
+            speed *= SpeedScale;
 
             Vector3 forward = CameraRig != null
                 ? Quaternion.Euler(0f, CameraRig.Yaw, 0f) * Vector3.forward
@@ -389,6 +391,7 @@ namespace Clone.Player
                 desired.Normalize();
 
             float speed = IsCrouching ? SwimSpeed * 0.5f : SwimSpeed;
+            speed *= SpeedScale;
             Vector3 current = _body.linearVelocity;
             Vector3 horizontal = Vector3.MoveTowards(
                 new Vector3(current.x, 0f, current.z),

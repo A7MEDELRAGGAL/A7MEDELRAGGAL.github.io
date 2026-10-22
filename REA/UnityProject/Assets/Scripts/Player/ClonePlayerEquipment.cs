@@ -99,13 +99,19 @@ namespace Clone.Player
         public float SpeedFactor => EncumbranceFactor * (1f + TotalAgility);
 
         private FpsPlayerMotor _motor;
+        private ClonePlayerMovement _movement;
 
         private void Update()
         {
             if (_motor == null)
                 _motor = GetComponentInParent<FpsPlayerMotor>();
             if (_motor != null)
-                _motor.SpeedScale = SpeedFactor;
+                _motor.SpeedScale = EncumbranceFactor;
+
+            if (_movement == null)
+                _movement = GetComponentInParent<ClonePlayerMovement>();
+            if (_movement != null)
+                _movement.SpeedScale = EncumbranceFactor;
         }
 
         [ServerRpc]

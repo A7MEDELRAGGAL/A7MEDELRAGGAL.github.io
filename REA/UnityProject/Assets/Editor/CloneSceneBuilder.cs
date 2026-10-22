@@ -1,8 +1,13 @@
 using System.IO;
 using Clone.Net;
+using Clone.Player;
+using Clone.SaveLoad;
+using Clone.World;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using FishNet.Object;
+using FishNet.Transporting;
 
 namespace Clone.Editor
 {
@@ -40,6 +45,40 @@ namespace Clone.Editor
 
             var hud = new GameObject("CloneNetworkHud");
             hud.AddComponent<CloneNetworkHud>();
+
+            var network = new GameObject("NetworkManager");
+            network.AddComponent<FishNet.Managing.NetworkManager>();
+            network.AddComponent<Tugboat>();
+
+            var managers = new GameObject("Managers");
+            var dayNight = managers.AddComponent<CloneDayNightManager>();
+            var sun = new GameObject("Sun");
+            sun.transform.SetParent(managers.transform, false);
+            var light = sun.AddComponent<Light>();
+            light.type = LightType.Directional;
+            light.shadows = LightShadows.Soft;
+            sun.transform.rotation = Quaternion.Euler(50f, 170f, 0f);
+            dayNight.sun = light;
+            var spawnManager = managers.AddComponent<CloneSpawnManager>();
+            spawnManager.PlayerSpawnPoints = spawnPoints.transform;
+            managers.AddComponent<CloneAutoSaver>();
+
+            var runManager = new GameObject("RunManager");
+            runManager.AddComponent<CloneRunManager>();
+            runManager.AddComponent<NetworkObject>();
+
+            ClonePlayerPrefabBuilder.CreatePlayerPrefab();
+            var playerPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Player.prefab");
+            if (playerPrefab != null)
+            {
+                var player = (GameObject)PrefabUtility.InstantiatePrefab(playerPrefab, scene);
+                player.transform.position = new Vector3(0f, 1.5f, 0f);
+                player.AddComponent<CloneHostSpawner>();
+            }
+            else
+            {
+                Debug.LogWarning("[Clone] Player prefab missing; spawn skipped");
+            }
 
             EditorSceneManager.SaveScene(scene, ScenePath);
             Debug.Log($"[Clone] Created {ScenePath}");
