@@ -25,6 +25,17 @@ namespace Clone.Items
         public const int Antidote = 19;
 	public const int KelpWrack = 20;
 	public const int BossKey = 21;
+        public const int WoodLog = 22;
+        public const int Stone = 23;
+        public const int WoodPlanks = 24;
+        public const int Fiber = 25;
+        public const int WoodAxe = 26;
+        public const int WoodPick = 27;
+        public const int StoneSword = 28;
+        public const int ArmorWoodenHelm = 29;
+        public const int ArmorWoodenChest = 30;
+        public const int ArmorWoodenLegs = 31;
+        public const int ArmorWoodenBoots = 32;
 
         private static readonly Dictionary<int, CloneItemDefinition> Definitions =
             new Dictionary<int, CloneItemDefinition>();
@@ -55,6 +66,11 @@ namespace Clone.Items
         {
             EnsureBuilt();
             return Definitions.TryGetValue(id, out CloneItemDefinition definition) ? definition : null;
+        }
+
+        public static CloneItemDefinition GetById(int id)
+        {
+            return Get(id);
         }
 
         public static bool TryGet(int id, out CloneItemDefinition definition)
@@ -249,6 +265,85 @@ namespace Clone.Items
 			bossKey.MaxStack = 1;
 			bossKey.Stackable = false;
 			Register(bossKey);
+
+			CloneItemDefinition woodLog = Create(WoodLog, "Wood Log", CloneItemCategory.Resource);
+			woodLog.Weight = 2f;
+			woodLog.MaxStack = 20;
+			Register(woodLog);
+
+			CloneItemDefinition stone = Create(Stone, "Stone", CloneItemCategory.Resource);
+			stone.Weight = 1.5f;
+			stone.MaxStack = 20;
+			Register(stone);
+
+			CloneItemDefinition planks = Create(WoodPlanks, "Wood Planks", CloneItemCategory.Resource);
+			planks.Weight = 0.5f;
+			planks.MaxStack = 30;
+			Register(planks);
+
+			CloneItemDefinition fiber = Create(Fiber, "Plant Fiber", CloneItemCategory.Resource);
+			fiber.Weight = 0.1f;
+			fiber.MaxStack = 40;
+			Register(fiber);
+
+			CloneItemDefinition axe = Create(WoodAxe, "Wood Axe", CloneItemCategory.Tool);
+			axe.Weight = 1.8f;
+			axe.Stackable = false;
+			axe.Damage = 12f;
+			axe.Knockback = 4f;
+			axe.AttackRange = 2.2f;
+			axe.MaxStack = 1;
+			Register(axe);
+
+			CloneItemDefinition wPick = Create(WoodPick, "Wood Pick", CloneItemCategory.Tool);
+			wPick.Weight = 1.8f;
+			wPick.Stackable = false;
+			wPick.Damage = 10f;
+			wPick.Knockback = 4f;
+			wPick.AttackRange = 2.2f;
+			wPick.MaxStack = 1;
+			Register(wPick);
+
+			CloneItemDefinition sword = Create(StoneSword, "Stone Sword", CloneItemCategory.Weapon);
+			sword.Weight = 1.5f;
+			sword.Stackable = false;
+			sword.Damage = 22f;
+			sword.Knockback = 5f;
+			sword.AttackRange = 2.4f;
+			sword.MaxStack = 1;
+			Register(sword);
+
+			CloneItemDefinition helm = Create(ArmorWoodenHelm, "Wooden Helm", CloneItemCategory.Gear);
+			helm.Weight = 1.2f;
+			helm.Stackable = false;
+			helm.MaxStack = 1;
+			helm.ArmorTier = 1;
+			helm.Protection = 0.05f;
+			Register(helm);
+
+			CloneItemDefinition chest = Create(ArmorWoodenChest, "Wooden Chestplate", CloneItemCategory.Gear);
+			chest.Weight = 2.4f;
+			chest.Stackable = false;
+			chest.MaxStack = 1;
+			chest.ArmorTier = 1;
+			chest.Protection = 0.1f;
+			Register(chest);
+
+			CloneItemDefinition legs = Create(ArmorWoodenLegs, "Wooden Leggings", CloneItemCategory.Gear);
+			legs.Weight = 1.8f;
+			legs.Stackable = false;
+			legs.MaxStack = 1;
+			legs.ArmorTier = 1;
+			legs.Protection = 0.08f;
+			Register(legs);
+
+			CloneItemDefinition boots = Create(ArmorWoodenBoots, "Wooden Boots", CloneItemCategory.Gear);
+			boots.Weight = 1f;
+			boots.Stackable = false;
+			boots.MaxStack = 1;
+			boots.ArmorTier = 1;
+			boots.Protection = 0.05f;
+			Register(boots);
 		}
     }
 }

@@ -82,7 +82,7 @@ Now the plan is in progress.
 | Save/load + auto-save | [x] | [ ] |
 | Full loop: run, die, restart | [x] | [ ] |
 | Chest loot tables + boss key drop | [x] | [ ] |
-| Craftable gear/weapons progression | [ ] | [ ] |
+| Craftable gear/weapons progression | [x] | [ ] |
 
 ## Milestone 10: Chest Loot Tables + Boss Key Drop (Muck premise: boss creatures drop a key)
 Clean-room decisions (no source/constants copied):
@@ -101,3 +101,12 @@ Clean-room decisions (no source/constants copied):
 - Encumbrance scales FpsPlayerMotor speed constants at one point; ratios preserved.
 - Save: update SaveLoad scripts.
 - Do not transcribe names/strings/constants; original code only.
+
+Implemented (M11):
+- `CloneItemDefinition`: `Gear` category added; armor fields (`ArmorTier`, `Protection`).
+- `CloneItemCatalog`: resource/tool/sword/armor ids 22–32 registered in `BuildDefaultCatalog()`.
+- `ClonePlayerInventory`: `ServerHasItems`/`ServerConsume` (server-authoritative ingredient checks).
+- `CloneCraftingManager`: recipe table (axe/pick/armor/planks, etc.), server-side craft flow; gear recipes auto-equip.
+- `ClonePlayerEquipment`: 4 wearable slots (Helm/Chest/Legs/Boots), `TotalProtection`, `EncumbranceFactor`; motor speed scaling, ratios preserved.
+- `ClonePlayerVitals`: `ServerDamage` applies protection mitigation.
+- SaveLoad: equipment persisted (per-slot item ids) + inventory.

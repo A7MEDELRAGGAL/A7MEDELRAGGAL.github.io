@@ -24,6 +24,7 @@ namespace Clone.SaveLoad
         public float Poison;
         public float Fire;
         public int Money;
+        public int[] Equipment;
         public CloneSavedSlot[] Inventory = Array.Empty<CloneSavedSlot>();
     }
 

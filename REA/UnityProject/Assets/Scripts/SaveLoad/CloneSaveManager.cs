@@ -152,6 +152,15 @@ namespace Clone.SaveLoad
             if (currency != null)
                 saved.Money = currency.Money;
 
+            var equipment = player.GetComponent<ClonePlayerEquipment>();
+            if (equipment != null)
+            {
+                var equipped = new int[ClonePlayerEquipment.SlotCount];
+                for (int i = 0; i < ClonePlayerEquipment.SlotCount; i++)
+                    equipped[i] = equipment.GetSlotItemId(i);
+                saved.Equipment = equipped;
+            }
+
             var inventory = player.Inventory;
             if (inventory != null)
             {
@@ -212,6 +221,16 @@ namespace Clone.SaveLoad
             var currency = player.GetComponent<CloneCurrency>();
             if (currency != null)
                 currency.SetMoney(saved.Money);
+
+            var equipment = player.GetComponent<ClonePlayerEquipment>();
+            if (equipment != null && saved.Equipment != null)
+            {
+                for (int i = 0; i < ClonePlayerEquipment.SlotCount; i++)
+                {
+                    int itemId = i < saved.Equipment.Length ? saved.Equipment[i] : -1;
+                    equipment.ServerApplySavedSlot(i, itemId);
+                }
+            }
 
             var inventory = player.Inventory;
             if (inventory == null)

@@ -258,6 +258,43 @@ namespace Clone.Player
             CommitMutation();
         }
 
+        [Server]
+        public bool ServerHasItems(int itemId, int amount)
+        {
+            if (amount <= 0)
+                return true;
+
+            int total = 0;
+            for (int i = 0; i < _slots.Length && total < amount; i++)
+            {
+                CloneInventorySlot slot = _slots[i];
+                if (!slot.IsEmpty && slot.ItemId == itemId)
+                    total += slot.Amount;
+            }
+
+            return total >= amount;
+        }
+
+        [Server]
+        public bool ServerConsume(int itemId, int amount)
+        {
+            if (amount <= 0 || !ServerHasItems(itemId, amount))
+                return false;
+
+            int remaining = amount;
+            for (int i = 0; i < _slots.Length && remaining > 0; i++)
+            {
+                CloneInventorySlot slot = _slots[i];
+                if (slot.IsEmpty || slot.ItemId != itemId)
+                    continue;
+
+                remaining -= slot.Remove(remaining);
+            }
+
+            CommitMutation();
+            return true;
+        }
+
         [ServerRpc]
 		public void ServerRequestSetBait(int itemId)
 		{

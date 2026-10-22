@@ -9,6 +9,7 @@ namespace Clone.Fps
         public float WalkSpeed = 5f;
         public float SprintSpeed = 8.5f;
         public float CrouchSpeed = 2.4f;
+        public float SpeedScale = 1f;
         public float AirControl = 0.32f;
         public float MoveAcceleration = 80f;
 
@@ -135,6 +136,7 @@ namespace Clone.Fps
                 : IsCrouching ? CrouchSpeed
                 : IsSprinting ? SprintSpeed
                 : WalkSpeed;
+            speed *= SpeedScale;
 
             Vector3 forward = Quaternion.Euler(0f, transform.eulerAngles.y, 0f) * Vector3.forward;
             Vector3 right = new Vector3(forward.z, 0f, -forward.x);
@@ -174,7 +176,7 @@ namespace Clone.Fps
 
             float planarSpeed = new Vector2(_body.linearVelocity.x, _body.linearVelocity.z).magnitude;
             bool pressed = Input.GetKeyDown(SlideKey) || Input.GetKey(SlideKey);
-            if (!pressed || planarSpeed < SprintSpeed * 0.6f)
+            if (!pressed || planarSpeed < SprintSpeed * SpeedScale * 0.6f)
                 return;
 
             IsSliding = true;
@@ -207,7 +209,7 @@ namespace Clone.Fps
             }
 
             bool jumpCancel = _jumpBuffer > 0f && SlideTime >= SlideMinDuration;
-            bool expired = SlideTime >= SlideMaxDuration || planar <= WalkSpeed * 1.05f;
+            bool expired = SlideTime >= SlideMaxDuration || planar <= WalkSpeed * SpeedScale * 1.05f;
             if (jumpCancel || expired)
                 EndSlide(jumpCancel);
         }

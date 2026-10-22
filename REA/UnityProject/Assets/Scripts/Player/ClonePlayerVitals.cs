@@ -57,7 +57,10 @@ namespace Clone.Player
         {
             if (IsDead || amount <= 0f)
                 return;
-            _health.Value = Mathf.Max(0f, _health.Value - amount);
+
+            var equipment = GetComponent<ClonePlayerEquipment>();
+            float mitigation = equipment != null ? Mathf.Clamp01(equipment.TotalProtection) : 0f;
+            _health.Value = Mathf.Max(0f, _health.Value - amount * (1f - mitigation));
             if (IsDead)
                 ServerRespawnOrResurrect();
         }

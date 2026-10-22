@@ -10,7 +10,8 @@ namespace Clone.Items
         FishingRod,
         Bait,
         Consumable,
-        Resource
+        Resource,
+        Gear
     }
 
     [Serializable]
@@ -50,6 +51,10 @@ namespace Clone.Items
         public float HealthRestore;
         public float PoisonCure;
         public float FireCure;
+
+        [Header("Armor")]
+        public int ArmorTier;
+        public float Protection;
 
         public bool IsRod => Category == CloneItemCategory.FishingRod;
         public bool IsBait => Category == CloneItemCategory.Bait;
