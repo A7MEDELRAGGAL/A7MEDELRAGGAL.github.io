@@ -106,12 +106,12 @@ namespace Clone.Player
             if (_motor == null)
                 _motor = GetComponentInParent<FpsPlayerMotor>();
             if (_motor != null)
-                _motor.SpeedScale = EncumbranceFactor;
+                _motor.SpeedScale = SpeedFactor;
 
             if (_movement == null)
                 _movement = GetComponentInParent<ClonePlayerMovement>();
             if (_movement != null)
-                _movement.SpeedScale = EncumbranceFactor;
+                _movement.SpeedScale = SpeedFactor;
         }
 
         [ServerRpc]
