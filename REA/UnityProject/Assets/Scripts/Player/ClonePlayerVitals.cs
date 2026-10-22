@@ -34,6 +34,9 @@ namespace Clone.Player
             float fullness = Mathf.Max(0f, _fullness.Value - 0.05f);
             _fullness.Value = fullness;
 
+            if (fullness >= 60f)
+                ServerHeal(0.5f);
+
             if (fullness <= 0f)
                 ServerDamage(0.5f);
 

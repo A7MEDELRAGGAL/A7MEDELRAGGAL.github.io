@@ -112,3 +112,4 @@ Implemented (M11):
 - SaveLoad: equipment persisted (per-slot item ids) + inventory.
 - Runtime bootstrap: `ClonePlayer` ensures `ClonePlayerEquipment`/`CloneCraftingManager` exist via `AddComponent` in Awake (no prefab edit needed).
 - `CloneCraftingUI`: code-built UGUI panel ([C] toggles) — recipe rows with costs, equipped slots with unequip; server-authoritative craft RPC.
+- `ServerTickVitals`: passive regen while fullness >= 60 (Muck-style fullness-driven healing). Stamina: no system in clone yet — deferred.
