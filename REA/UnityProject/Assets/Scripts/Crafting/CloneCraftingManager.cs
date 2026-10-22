@@ -57,6 +57,8 @@ namespace Clone.Crafting
         [Header("Recipe Registry")]
         [SerializeField] private List<CloneRecipe> recipes = new List<CloneRecipe>();
 
+        public IReadOnlyList<CloneRecipe> Recipes => recipes;
+
         private int nextRecipeId = 1;
 
         private void Awake()
@@ -163,7 +165,7 @@ namespace Clone.Crafting
         }
 
         [ServerRpc(RequireOwnership = false)]
-        private void ServerRequestCraft(int recipeId, ServerRpcParams rpcParams = default)
+        public void ServerRequestCraft(int recipeId, ServerRpcParams rpcParams = default)
         {
             ExecuteCraft(recipeId);
         }

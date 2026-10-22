@@ -110,3 +110,5 @@ Implemented (M11):
 - `ClonePlayerEquipment`: 4 wearable slots (Helm/Chest/Legs/Boots), `TotalProtection`, `EncumbranceFactor`; motor speed scaling, ratios preserved.
 - `ClonePlayerVitals`: `ServerDamage` applies protection mitigation.
 - SaveLoad: equipment persisted (per-slot item ids) + inventory.
+- Runtime bootstrap: `ClonePlayer` ensures `ClonePlayerEquipment`/`CloneCraftingManager` exist via `AddComponent` in Awake (no prefab edit needed).
+- `CloneCraftingUI`: code-built UGUI panel ([C] toggles) — recipe rows with costs, equipped slots with unequip; server-authoritative craft RPC.

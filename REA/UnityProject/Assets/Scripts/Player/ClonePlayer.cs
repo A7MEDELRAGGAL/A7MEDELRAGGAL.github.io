@@ -1,3 +1,5 @@
+using Clone.Crafting;
+using Clone.CraftingUI;
 using Clone.World;
 using FishNet.Object;
 using UnityEngine;
@@ -20,6 +22,8 @@ namespace Clone.Player
         public ClonePlayerInventory Inventory { get; private set; }
         public ClonePlayerHolding Holding { get; private set; }
         public CloneJournal Journal { get; private set; }
+        public ClonePlayerEquipment Equipment { get; private set; }
+        public CloneCraftingManager Crafting { get; private set; }
         public CloneBoat CurrentBoat { get; private set; }
         public bool IsDrivingClient { get; private set; }
 
@@ -30,6 +34,12 @@ namespace Clone.Player
             Inventory = GetComponent<ClonePlayerInventory>();
             Holding = GetComponent<ClonePlayerHolding>();
             Journal = GetComponent<CloneJournal>();
+            Equipment = GetComponent<ClonePlayerEquipment>();
+            if (Equipment == null)
+                Equipment = gameObject.AddComponent<ClonePlayerEquipment>();
+            Crafting = GetComponent<CloneCraftingManager>();
+            if (Crafting == null)
+                Crafting = gameObject.AddComponent<CloneCraftingManager>();
             CameraRig = GetComponentInChildren<ClonePlayerCamera>();
         }
 
@@ -41,6 +51,8 @@ namespace Clone.Player
                 LocalPlayer = this;
                 if (CameraRig != null)
                     CameraRig.Activate();
+                if (Crafting != null)
+                    CloneCraftingUI.EnsureFor(Crafting);
             }
         }
 
