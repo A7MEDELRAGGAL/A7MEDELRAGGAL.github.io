@@ -56,6 +56,7 @@ namespace Clone.Editor
 
             var managers = new GameObject("Managers");
             var dayNight = managers.AddComponent<CloneDayNightManager>();
+            managers.AddComponent<FishNet.Object.NetworkObject>();
             var sun = new GameObject("Sun");
             sun.transform.SetParent(managers.transform, false);
             var light = sun.AddComponent<Light>();
