@@ -67,8 +67,13 @@ namespace Clone.Editor
             var spawnManager = managers.AddComponent<CloneSpawnManager>();
             spawnManager.PlayerSpawnPoints = spawnPoints.transform;
             managers.AddComponent<CloneAutoSaver>();
+            managers.AddComponent<CloneBossDirector>();
 
-            var runManager = new GameObject("RunManager");
+            var chest = new GameObject("CloneChest");
+            chest.AddComponent<FishNet.Object.NetworkObject>();
+            chest.AddComponent<CloneChest>();
+
+        var runManager = new GameObject("RunManager");
             runManager.AddComponent<CloneRunManager>();
             runManager.AddComponent<NetworkObject>();
 

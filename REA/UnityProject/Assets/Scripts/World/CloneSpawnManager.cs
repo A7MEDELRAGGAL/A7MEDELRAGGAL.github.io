@@ -18,7 +18,6 @@ namespace Clone.World
 
         [Header("Fallbacks")]
         public Vector3 DefaultSpawn = new Vector3(0f, 2f, 0f);
-        public int MaxAttempts = 12;
 
         private readonly List<Transform> _players = new List<Transform>();
         private readonly List<Transform> _islands = new List<Transform>();

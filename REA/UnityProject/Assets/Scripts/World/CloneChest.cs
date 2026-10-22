@@ -78,35 +78,35 @@ namespace Clone.World
             return IsValidViewSlot(slot) ? _viewCookness[slot] : 0f;
         }
 
-        private struct LootEntry
+        private struct CloneChestLootEntry
         {
             public int ItemId;
             public int Amount;
             public float Weight;
         }
 
-        private static readonly LootEntry[] LootTable = new LootEntry[]
+        private static readonly CloneChestLootEntry[] LootTable = new CloneChestLootEntry[]
         {
-            new LootEntry { ItemId = 1, Amount = 1, Weight = 0.6f },
-            new LootEntry { ItemId = 2, Amount = 1, Weight = 0.6f },
-            new LootEntry { ItemId = 3, Amount = 1, Weight = 0.8f },
-            new LootEntry { ItemId = 4, Amount = 1, Weight = 0.5f },
-            new LootEntry { ItemId = 5, Amount = 1, Weight = 0.8f },
-            new LootEntry { ItemId = 6, Amount = 3, Weight = 1.2f },
-            new LootEntry { ItemId = 7, Amount = 2, Weight = 1.0f },
-            new LootEntry { ItemId = 8, Amount = 6, Weight = 3.0f },
-            new LootEntry { ItemId = 9, Amount = 4, Weight = 2.5f },
-            new LootEntry { ItemId = 10, Amount = 5, Weight = 2.5f },
-            new LootEntry { ItemId = 11, Amount = 3, Weight = 4.0f },
-            new LootEntry { ItemId = 12, Amount = 2, Weight = 3.0f },
-            new LootEntry { ItemId = 13, Amount = 2, Weight = 3.0f },
-            new LootEntry { ItemId = 14, Amount = 3, Weight = 3.5f },
-            new LootEntry { ItemId = 15, Amount = 2, Weight = 3.5f },
-            new LootEntry { ItemId = 16, Amount = 4, Weight = 3.0f },
-            new LootEntry { ItemId = 17, Amount = 5, Weight = 4.0f },
-            new LootEntry { ItemId = 18, Amount = 3, Weight = 2.0f },
-            new LootEntry { ItemId = 19, Amount = 2, Weight = 1.5f },
-            new LootEntry { ItemId = 20, Amount = 4, Weight = 2.5f },
+            new CloneChestLootEntry { ItemId = 1, Amount = 1, Weight = 0.6f },
+            new CloneChestLootEntry { ItemId = 2, Amount = 1, Weight = 0.6f },
+            new CloneChestLootEntry { ItemId = 3, Amount = 1, Weight = 0.8f },
+            new CloneChestLootEntry { ItemId = 4, Amount = 1, Weight = 0.5f },
+            new CloneChestLootEntry { ItemId = 5, Amount = 1, Weight = 0.8f },
+            new CloneChestLootEntry { ItemId = 6, Amount = 3, Weight = 1.2f },
+            new CloneChestLootEntry { ItemId = 7, Amount = 2, Weight = 1.0f },
+            new CloneChestLootEntry { ItemId = 8, Amount = 6, Weight = 3.0f },
+            new CloneChestLootEntry { ItemId = 9, Amount = 4, Weight = 2.5f },
+            new CloneChestLootEntry { ItemId = 10, Amount = 5, Weight = 2.5f },
+            new CloneChestLootEntry { ItemId = 11, Amount = 3, Weight = 4.0f },
+            new CloneChestLootEntry { ItemId = 12, Amount = 2, Weight = 3.0f },
+            new CloneChestLootEntry { ItemId = 13, Amount = 2, Weight = 3.0f },
+            new CloneChestLootEntry { ItemId = 14, Amount = 3, Weight = 3.5f },
+            new CloneChestLootEntry { ItemId = 15, Amount = 2, Weight = 3.5f },
+            new CloneChestLootEntry { ItemId = 16, Amount = 4, Weight = 3.0f },
+            new CloneChestLootEntry { ItemId = 17, Amount = 5, Weight = 4.0f },
+            new CloneChestLootEntry { ItemId = 18, Amount = 3, Weight = 2.0f },
+            new CloneChestLootEntry { ItemId = 19, Amount = 2, Weight = 1.5f },
+            new CloneChestLootEntry { ItemId = 20, Amount = 4, Weight = 2.5f },
         };
 
         private bool _lootRolled;
@@ -122,7 +122,7 @@ namespace Clone.World
             for (int slot = 0; slot < ChestSlotCount; slot++)
             {
                 float pick = UnityEngine.Random.Range(0f, total);
-                LootEntry chosen = LootTable[LootTable.Length - 1];
+                CloneChestLootEntry chosen = LootTable[LootTable.Length - 1];
                 for (int i = 0; i < LootTable.Length; i++)
                 {
                     pick -= LootTable[i].Weight;
