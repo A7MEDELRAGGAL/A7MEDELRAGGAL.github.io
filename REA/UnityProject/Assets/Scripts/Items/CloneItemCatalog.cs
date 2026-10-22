@@ -319,6 +319,7 @@ namespace Clone.Items
 			helm.MaxStack = 1;
 			helm.ArmorTier = 1;
 			helm.Protection = 0.05f;
+			helm.Agility = 0.01f;
 			Register(helm);
 
 			CloneItemDefinition chest = Create(ArmorWoodenChest, "Wooden Chestplate", CloneItemCategory.Gear);
@@ -335,6 +336,7 @@ namespace Clone.Items
 			legs.MaxStack = 1;
 			legs.ArmorTier = 1;
 			legs.Protection = 0.08f;
+			legs.Agility = 0.01f;
 			Register(legs);
 
 			CloneItemDefinition boots = Create(ArmorWoodenBoots, "Wooden Boots", CloneItemCategory.Gear);
@@ -343,6 +345,7 @@ namespace Clone.Items
 			boots.MaxStack = 1;
 			boots.ArmorTier = 1;
 			boots.Protection = 0.05f;
+			boots.Agility = 0.02f;
 			Register(boots);
 		}
     }

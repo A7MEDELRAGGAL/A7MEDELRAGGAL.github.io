@@ -107,9 +107,10 @@ Implemented (M11):
 - `CloneItemCatalog`: resource/tool/sword/armor ids 22–32 registered in `BuildDefaultCatalog()`.
 - `ClonePlayerInventory`: `ServerHasItems`/`ServerConsume` (server-authoritative ingredient checks).
 - `CloneCraftingManager`: recipe table (axe/pick/armor/planks, etc.), server-side craft flow; gear recipes auto-equip.
-- `ClonePlayerEquipment`: 4 wearable slots (Helm/Chest/Legs/Boots), `TotalProtection`, `EncumbranceFactor`; motor speed scaling, ratios preserved.
+- `ClonePlayerEquipment`: 4 wearable slots (Helm/Chest/Legs/Boots), `TotalProtection`, `TotalAgility`, `EncumbranceFactor`; `SpeedFactor` combines encumbrance (multiplicative penalty) and agility (multiplicative bonus) into `FpsPlayerMotor.SpeedScale` at one point, ratios preserved.
 - `ClonePlayerVitals`: `ServerDamage` applies protection mitigation.
 - SaveLoad: equipment persisted (per-slot item ids) + inventory.
 - Runtime bootstrap: `ClonePlayer` ensures `ClonePlayerEquipment`/`CloneCraftingManager` exist via `AddComponent` in Awake (no prefab edit needed).
 - `CloneCraftingUI`: code-built UGUI panel ([C] toggles) — recipe rows with costs, equipped slots with unequip; server-authoritative craft RPC.
 - `ServerTickVitals`: passive regen while fullness >= 60 (Muck-style fullness-driven healing). Stamina: no system in clone yet — deferred.
+- Agility tier: `CloneItemDefinition.Agility` per-piece stat (wooden helm/legs +1%, boots +2%, chest +0% as the heaviest piece); summed as `TotalAgility` and applied multiplicatively with encumbrance at the single `SpeedScale` point.

@@ -66,6 +66,21 @@ namespace Clone.Player
             }
         }
 
+        public float TotalAgility
+        {
+            get
+            {
+                float total = 0f;
+                for (int slot = 0; slot < SlotCount; slot++)
+                {
+                    CloneItemDefinition definition = CloneItemCatalog.Get(GetSlotItemId(slot));
+                    if (definition != null)
+                        total += definition.Agility;
+                }
+                return total;
+            }
+        }
+
         public float EncumbranceFactor
         {
             get
@@ -81,6 +96,8 @@ namespace Clone.Player
             }
         }
 
+        public float SpeedFactor => EncumbranceFactor * (1f + TotalAgility);
+
         private FpsPlayerMotor _motor;
 
         private void Update()
@@ -88,7 +105,7 @@ namespace Clone.Player
             if (_motor == null)
                 _motor = GetComponentInParent<FpsPlayerMotor>();
             if (_motor != null)
-                _motor.SpeedScale = EncumbranceFactor;
+                _motor.SpeedScale = SpeedFactor;
         }
 
         [ServerRpc]

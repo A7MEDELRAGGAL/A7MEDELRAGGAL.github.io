@@ -55,6 +55,7 @@ namespace Clone.Items
         [Header("Armor")]
         public int ArmorTier;
         public float Protection;
+        public float Agility;
 
         public bool IsRod => Category == CloneItemCategory.FishingRod;
         public bool IsBait => Category == CloneItemCategory.Bait;
