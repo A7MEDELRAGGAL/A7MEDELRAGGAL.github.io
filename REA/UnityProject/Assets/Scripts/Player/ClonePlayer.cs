@@ -1,5 +1,6 @@
 using Clone.Crafting;
 using Clone.CraftingUI;
+using Clone.Hud;
 using Clone.World;
 using FishNet.Object;
 using UnityEngine;
@@ -53,6 +54,8 @@ namespace Clone.Player
                     CameraRig.Activate();
                 if (Crafting != null)
                     CloneCraftingUI.EnsureFor(Crafting);
+
+                ClonePlayerHud.EnsureFor(this);
             }
         }
 
